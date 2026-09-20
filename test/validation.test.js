@@ -53,6 +53,14 @@ test("unsupported operations are rejected", () => {
   assert.throws(() => validatePolicy(policy), /Policy validation failed/);
 });
 
+test("non-canonical policy resource patterns are rejected", () => {
+  const policy = {
+    ...validPolicy,
+    rules: [{ ...validPolicy.rules[0], resources: ["file://workspace/%2e%2e/secret"] }],
+  };
+  assert.throws(() => validatePolicy(policy), /Policy validation failed/);
+});
+
 test("duplicate action ids are rejected", () => {
   const scenario = { ...validScenario, actions: [validScenario.actions[0], { ...validScenario.actions[0] }] };
   assert.throws(() => validateScenario(scenario), /Scenario validation failed/);

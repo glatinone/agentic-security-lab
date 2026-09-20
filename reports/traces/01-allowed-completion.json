@@ -1,0 +1,18 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.3.0",
+  "trace": {
+    "id": "allowed-action-completes",
+    "title": "Tool completion follows an allow decision"
+  },
+  "result": "pass",
+  "summary": {
+    "events": 2,
+    "decisions": 1,
+    "completions": 1,
+    "findings": 0,
+    "matchedExpectation": true
+  },
+  "expectedFindings": [],
+  "findings": []
+}

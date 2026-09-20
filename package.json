@@ -1,7 +1,7 @@
 {
   "name": "agentic-security-lab",
-  "version": "0.2.0",
-  "description": "Deterministic policy and trace evaluator for AI agent actions",
+  "version": "0.3.0",
+  "description": "Deterministic policy evaluator and execution-trace auditor for AI agent actions",
   "type": "module",
   "private": true,
   "bin": {
@@ -9,9 +9,10 @@
   },
   "scripts": {
     "test": "node --test",
-    "check": "node --check src/cli.js && node --test",
+    "check": "node --check src/cli.js && node --check src/trace-audit.js && node --test",
     "demo": "node src/cli.js evaluate scenarios/01-scoped-read.json",
     "suite": "node src/cli.js suite scenarios",
+    "audit": "node src/cli.js audit-suite traces",
     "reports": "node scripts/build-reports.js"
   },
   "engines": {

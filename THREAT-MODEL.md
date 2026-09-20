@@ -39,6 +39,8 @@ The scenario and policy files are untrusted local input. Evidence marked `untrus
 | TM-07 | An allow rule overlaps a deny rule | Explicit deny takes precedence | Confusing policies still need human review |
 | TM-08 | Large input exhausts memory | The CLI limits each JSON input to 1 MiB | Direct library callers must impose their own limit |
 | TM-09 | Expected output is edited to hide regression | Computed and expected decisions are reported separately | Repository write access can alter code and fixtures together |
+| TM-10 | Traversal syntax escapes an allowed resource prefix | Resources are repeatedly decoded, canonicalized, and checked before matching | Non-path resource schemes may need scheme-specific validation |
+| TM-11 | A tool completes after policy denied the action | Ordered trace audit links completion to the latest prior decision | The evaluator cannot prove trace completeness or authenticity |
 
 ## Security invariants
 
@@ -49,6 +51,8 @@ The scenario and policy files are untrusted local input. Evidence marked `untrus
 5. A detected secret forces a deny and its value is not copied into the report.
 6. Untrusted evidence cannot drive a sensitive action when the rule enables that control.
 7. Unknown operations and malformed inputs fail before evaluation.
+8. Non-canonical and traversal-bearing resources cannot reach policy matching.
+9. Every recorded tool completion must follow an allow decision for the same action.
 
 The tests exercise each invariant. See [`test/engine.test.js`](test/engine.test.js) and [`test/validation.test.js`](test/validation.test.js).
 
@@ -60,6 +64,7 @@ The tests exercise each invariant. See [`test/engine.test.js`](test/engine.test.
 - Natural-language prompt-injection detection
 - Complete data-loss prevention
 - Tamper-evident audit storage
+- Verification that a trace contains every runtime event
 - Formal verification or compliance certification
 
 ## Safe use

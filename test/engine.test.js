@@ -93,3 +93,21 @@ test("expectation mismatch fails the scenario without changing the decision", as
   assert.equal(report.result, "fail");
   assert.equal(report.summary.expectationMismatches, 1);
 });
+
+test("path traversal is denied before policy matching", async () => {
+  const report = evaluateScenario(await scenario("08-path-traversal.json"), policy);
+  assert.equal(report.actions[0].decision, "deny");
+  assert.equal(report.actions[0].matchedPolicyRule, null);
+  assert.ok(report.actions[0].findings.some(({ ruleId }) => ruleId === "ASL-110"));
+});
+
+test("double-encoded traversal is denied", async () => {
+  const report = evaluateScenario(await scenario("09-encoded-traversal.json"), policy);
+  assert.ok(report.actions[0].findings.some(({ ruleId }) => ruleId === "ASL-110"));
+});
+
+test("safe encoding is canonicalized before policy matching", async () => {
+  const report = evaluateScenario(await scenario("10-canonical-encoded-resource.json"), policy);
+  assert.equal(report.actions[0].decision, "allow");
+  assert.equal(report.actions[0].canonicalResource, "repository://glatinone/README.md");
+});

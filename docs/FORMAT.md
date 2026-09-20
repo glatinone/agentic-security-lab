@@ -27,6 +27,17 @@ A policy is an ordered collection of allow and deny rules. Deny rules take prece
 
 Resource patterns support `*` for one path segment and `**` across segments. Pattern matching is case-sensitive.
 
+Policy and approval patterns must already be canonical. Action resources are repeatedly percent-decoded to a stable form and normalized before matching. The evaluator rejects:
+
+- `.` or `..` path segments
+- plain or encoded backslashes
+- empty path segments
+- query strings and fragments, including encoded forms
+- malformed or excessively nested percent encoding
+- wildcards in action resources
+
+This keeps a broad rule such as `repository://owner/**` from accepting `repository://owner/docs/%252e%252e/private.txt`.
+
 ## Scenario
 
 A scenario names the policy file relative to the scenario file. `evaluatedAt` fixes time-dependent approval checks so repeated runs produce the same result.
@@ -87,3 +98,31 @@ New operations require an engine and schema change. Unknown values fail validati
 ## Reports
 
 Reports include only action metadata, decisions, matched policy rules, and finding evidence. Raw action arguments are not copied into reports. The current secret scanner recognizes a small set of common credential shapes and reports only the detected category.
+
+## Execution traces
+
+The `audit` command accepts an ordered trace with policy decisions and tool completions:
+
+```json
+{
+  "schemaVersion": "1.0",
+  "id": "denied-action-completes",
+  "title": "Tool completion appears after deny",
+  "events": [
+    {
+      "id": "decision-1",
+      "type": "policy.decision",
+      "actionId": "write-file",
+      "decision": "deny"
+    },
+    {
+      "id": "completion-1",
+      "type": "tool.completed",
+      "actionId": "write-file"
+    }
+  ],
+  "expectedFindings": ["ASL-201"]
+}
+```
+
+`ASL-201` records completion after deny. `ASL-202` records completion without a preceding decision. Event array order is authoritative. The audit checks internal trace consistency but does not verify that events are authentic or complete.

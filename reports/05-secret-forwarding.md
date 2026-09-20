@@ -1,9 +1,9 @@
 # Evaluation: An approved vendor request contains a token
 
-**Result:** PASS  
-**Scenario:** `secret-forwarding-blocked`  
-**Policy:** `portfolio-agent-v1`  
-**Evaluation time:** 2026-09-20T10:00:00.000Z
+- Result: **PASS**
+- Scenario: `secret-forwarding-blocked`
+- Policy: `portfolio-agent-v1`
+- Evaluation time: 2026-09-20T10:00:00.000Z
 
 ## Summary
 

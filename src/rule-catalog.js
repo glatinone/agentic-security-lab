@@ -44,6 +44,21 @@ export const RULE_CATALOG = Object.freeze({
     severity: "high",
     explanation: "A policy can prevent retrieved content from causing mutation, execution, or sending.",
   },
+  "ASL-110": {
+    title: "Resource identifier is unsafe or ambiguous",
+    severity: "critical",
+    explanation: "Resource identifiers are canonicalized before matching and traversal forms fail closed.",
+  },
+  "ASL-201": {
+    title: "Tool completed after a deny decision",
+    severity: "critical",
+    explanation: "A denied action must not reach tool completion.",
+  },
+  "ASL-202": {
+    title: "Tool completed without a preceding policy decision",
+    severity: "critical",
+    explanation: "Every tool completion must be preceded by an allow decision for the same action.",
+  },
 });
 
 export function finding(ruleId, detail, evidence = {}) {

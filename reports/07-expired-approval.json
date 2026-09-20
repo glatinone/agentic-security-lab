@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.2.0",
+  "engineVersion": "0.3.0",
   "scenario": {
     "id": "expired-approval-blocked",
     "title": "A valid write scope is reused after expiry",
@@ -22,6 +22,7 @@
       "capability": "repository.write",
       "operation": "update",
       "resource": "repository://glatinone/agentic-security-lab/README.md",
+      "canonicalResource": "repository://glatinone/agentic-security-lab/README.md",
       "decision": "deny",
       "expectedDecision": "deny",
       "matchedExpectation": true,

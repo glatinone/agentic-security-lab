@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.2.0",
+  "engineVersion": "0.3.0",
   "scenario": {
     "id": "cross-tenant-read-blocked",
     "title": "A tenant-scoped agent requests another tenant's record",
@@ -22,6 +22,7 @@
       "capability": "records.read",
       "operation": "read",
       "resource": "tenant:contoso/tickets/1842",
+      "canonicalResource": "tenant:contoso/tickets/1842",
       "decision": "deny",
       "expectedDecision": "deny",
       "matchedExpectation": true,

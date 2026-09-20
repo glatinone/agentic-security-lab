@@ -1,0 +1,32 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.3.0",
+  "trace": {
+    "id": "completion-without-policy-decision",
+    "title": "Tool completion has no preceding policy decision"
+  },
+  "result": "pass",
+  "summary": {
+    "events": 1,
+    "decisions": 0,
+    "completions": 1,
+    "findings": 1,
+    "matchedExpectation": true
+  },
+  "expectedFindings": [
+    "ASL-202"
+  ],
+  "findings": [
+    {
+      "actionId": "send-report",
+      "eventId": "completion-send",
+      "eventIndex": 0,
+      "ruleId": "ASL-202",
+      "title": "Tool completed without a preceding policy decision",
+      "severity": "critical",
+      "explanation": "Every tool completion must be preceded by an allow decision for the same action.",
+      "detail": "Completion event completion-send has no preceding policy decision for action send-report.",
+      "evidence": {}
+    }
+  ]
+}

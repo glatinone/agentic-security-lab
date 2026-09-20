@@ -1,4 +1,5 @@
 import { InputError } from "./errors.js";
+import { inspectResource } from "./matchers.js";
 
 const OPERATIONS = new Set([
   "read",
@@ -55,6 +56,12 @@ export function validatePolicy(policy) {
       requireStringArray(rule.capabilities, `${path}.capabilities`, issues);
       requireStringArray(rule.operations, `${path}.operations`, issues);
       requireStringArray(rule.resources, `${path}.resources`, issues);
+      for (const resource of rule.resources ?? []) {
+        const inspected = inspectResource(resource, { allowWildcards: true });
+        if (!inspected.ok || inspected.canonical !== resource) {
+          issues.push(`${path}.resources contains a non-canonical pattern: ${inspected.reason ?? resource}`);
+        }
+      }
       if (rule.operations?.some((operation) => !OPERATIONS.has(operation) && operation !== "*")) {
         issues.push(`${path}.operations contains an unsupported operation`);
       }
@@ -159,6 +166,12 @@ export function validateScenario(scenario) {
           requireStringArray(scope.capabilities, `actions[${index}].approval.scope.capabilities`, issues);
           requireStringArray(scope.operations, `actions[${index}].approval.scope.operations`, issues);
           requireStringArray(scope.resources, `actions[${index}].approval.scope.resources`, issues);
+          for (const resource of scope.resources ?? []) {
+            const inspected = inspectResource(resource, { allowWildcards: true });
+            if (!inspected.ok || inspected.canonical !== resource) {
+              issues.push(`actions[${index}].approval.scope.resources contains a non-canonical pattern`);
+            }
+          }
         }
       }
     }
@@ -166,4 +179,37 @@ export function validateScenario(scenario) {
 
   if (issues.length) throw new InputError("Scenario validation failed", issues);
   return scenario;
+}
+
+export function validateTrace(trace) {
+  const issues = [];
+  if (!isRecord(trace)) throw new InputError("Trace is not a JSON object", ["root must be an object"]);
+  if (trace.schemaVersion !== "1.0") issues.push('schemaVersion must equal "1.0"');
+  requireString(trace.id, "id", issues);
+  requireString(trace.title, "title", issues);
+  if (!Array.isArray(trace.events) || trace.events.length === 0) {
+    issues.push("events must contain at least one event");
+  } else {
+    const eventIds = new Set();
+    trace.events.forEach((event, index) => {
+      const path = `events[${index}]`;
+      if (!isRecord(event)) {
+        issues.push(`${path} must be an object`);
+        return;
+      }
+      requireString(event.id, `${path}.id`, issues);
+      if (eventIds.has(event.id)) issues.push(`${path}.id must be unique`);
+      eventIds.add(event.id);
+      requireString(event.actionId, `${path}.actionId`, issues);
+      if (!["policy.decision", "tool.completed"].includes(event.type)) {
+        issues.push(`${path}.type must be policy.decision or tool.completed`);
+      }
+      if (event.type === "policy.decision" && !["allow", "deny"].includes(event.decision)) {
+        issues.push(`${path}.decision must be allow or deny`);
+      }
+    });
+  }
+  requireStringArray(trace.expectedFindings, "expectedFindings", issues);
+  if (issues.length) throw new InputError("Trace validation failed", issues);
+  return trace;
 }

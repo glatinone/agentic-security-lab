@@ -13,6 +13,8 @@ Ordinary rule requests, documentation corrections, and new scenario proposals ca
 - The CLI reads local JSON files up to 1 MiB.
 - Evaluation runs without network access or third-party packages.
 - Raw action arguments are inspected in memory but are not copied into reports.
+- Resource identifiers are canonicalized before policy matching. Traversal and ambiguous forms are denied.
+- Trace audit order comes from the event array and is not cryptographically verified.
 - Secret detection is heuristic. A clean report does not prove that the input contained no secret.
 - Example tokens and identifiers in this repository are synthetic.
 

@@ -1,9 +1,9 @@
 # Evaluation: A tenant-scoped agent requests another tenant's record
 
-**Result:** PASS  
-**Scenario:** `cross-tenant-read-blocked`  
-**Policy:** `portfolio-agent-v1`  
-**Evaluation time:** 2026-09-20T10:00:00.000Z
+- Result: **PASS**
+- Scenario: `cross-tenant-read-blocked`
+- Policy: `portfolio-agent-v1`
+- Evaluation time: 2026-09-20T10:00:00.000Z
 
 ## Summary
 

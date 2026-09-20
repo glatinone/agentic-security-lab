@@ -11,7 +11,11 @@ import {
   renderRuleCatalog,
   renderSuiteTerminal,
   renderTerminal,
+  renderTraceMarkdown,
+  renderTraceSuiteTerminal,
+  renderTraceTerminal,
 } from "./reporters.js";
+import { auditTrace } from "./trace-audit.js";
 
 const HELP = `Agentic Security Lab
 
@@ -20,6 +24,8 @@ Evaluate proposed AI agent actions against explicit authority.
 Usage:
   asl evaluate <scenario.json> [--policy <policy.json>] [--format terminal|json|markdown] [--out <file>]
   asl suite [scenario-directory] [--format terminal|json] [--out <file>]
+  asl audit <trace.json> [--format terminal|json|markdown] [--out <file>]
+  asl audit-suite [trace-directory] [--format terminal|json] [--out <file>]
   asl rules
   asl help
 
@@ -124,6 +130,48 @@ async function runSuite(args) {
   return reports.every(({ result }) => result === "pass") ? 0 : 1;
 }
 
+async function auditFile(tracePath) {
+  return auditTrace(await readJson(path.resolve(tracePath), "trace"));
+}
+
+function renderTrace(report, format) {
+  if (format === "terminal") return renderTraceTerminal(report);
+  if (format === "json") return renderJson(report);
+  if (format === "markdown") return renderTraceMarkdown(report);
+  throw new CliError(`Unsupported format: ${format}`);
+}
+
+async function runAudit(args) {
+  const { positional, options } = parseOptions(args);
+  if (positional.length !== 1) throw new CliError("audit requires one trace file");
+  if (options.policy) throw new CliError("audit does not accept --policy");
+  const report = await auditFile(positional[0]);
+  await emit(renderTrace(report, options.format), options.out);
+  return report.result === "pass" ? 0 : 1;
+}
+
+async function runAuditSuite(args) {
+  const { positional, options } = parseOptions(args);
+  if (positional.length > 1) throw new CliError("audit-suite accepts at most one directory");
+  if (options.policy) throw new CliError("audit-suite does not accept --policy");
+  if (!["terminal", "json"].includes(options.format)) {
+    throw new CliError("audit-suite supports terminal and json formats");
+  }
+  const directory = path.resolve(positional[0] ?? "traces");
+  let names;
+  try {
+    names = (await readdir(directory)).filter((name) => name.endsWith(".json")).sort();
+  } catch (error) {
+    throw new CliError(`Cannot read trace directory ${directory}: ${error.message}`);
+  }
+  if (names.length === 0) throw new CliError(`No JSON traces found in ${directory}`);
+  const reports = [];
+  for (const name of names) reports.push(await auditFile(path.join(directory, name)));
+  const content = options.format === "json" ? renderJson(reports) : renderTraceSuiteTerminal(reports);
+  await emit(content, options.out);
+  return reports.every(({ result }) => result === "pass") ? 0 : 1;
+}
+
 export async function main(argv = process.argv.slice(2)) {
   const [command = "help", ...args] = argv;
   if (["help", "--help", "-h"].includes(command)) {
@@ -136,6 +184,8 @@ export async function main(argv = process.argv.slice(2)) {
   }
   if (command === "evaluate") return runEvaluate(args);
   if (command === "suite") return runSuite(args);
+  if (command === "audit") return runAudit(args);
+  if (command === "audit-suite") return runAuditSuite(args);
   throw new CliError(`Unknown command: ${command}`);
 }
 

@@ -2,17 +2,18 @@
 
 [![verify](https://github.com/glatinone/agentic-security-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/glatinone/agentic-security-lab/actions/workflows/ci.yml)
 
-**A local policy and trace evaluator for actions proposed by AI agents.**
+**A local policy evaluator and execution-trace auditor for AI agent actions.**
 
 Agent evaluations often grade the final answer. This lab examines a different failure boundary: what an agent tries to do with tools. It checks proposed actions against declared capabilities, resource scope, tenant ownership, approval records, data provenance, and a deny-by-default policy.
 
-The result is decision evidence that can be read in a terminal, stored as JSON, or reviewed as a Markdown case file.
+The result is decision evidence that can be read in a terminal, stored as JSON, or reviewed as a Markdown case file. A separate trace audit checks whether a tool completion violated that decision boundary.
 
 ```text
 proposed action
     │
     ├── declared capability?
     ├── resource and tenant in scope?
+    ├── resource canonical and traversal-free?
     ├── matching allow or deny rule?
     ├── approval valid for this exact action?
     ├── influenced by untrusted content?
@@ -56,6 +57,8 @@ Generate machine-readable or review-ready output:
 ```bash
 node src/cli.js evaluate scenarios/05-secret-forwarding.json --format json
 node src/cli.js evaluate scenarios/07-expired-approval.json --format markdown --out decision.md
+node src/cli.js audit traces/02-completion-after-deny.json
+node src/cli.js audit-suite traces
 node src/cli.js rules
 ```
 
@@ -63,6 +66,7 @@ node src/cli.js rules
 
 - Deny-by-default policy evaluation with explicit deny precedence
 - Capability, operation, and resource matching with `*` and `**` patterns
+- Resource canonicalization with plain, encoded, and double-encoded traversal rejection
 - Approval status, expiry, and exact scope checks
 - Tenant-boundary enforcement for `tenant:<id>/...` resources
 - Provenance checks that stop untrusted evidence from driving sensitive actions
@@ -70,7 +74,8 @@ node src/cli.js rules
 - Stable evaluation time and deterministic output for reproducible cases
 - Strict input validation, a 1 MiB input limit, and distinct CLI exit codes
 - Terminal, JSON, and Markdown reports
-- 30 tests covering allow paths, denial paths, malformed input, CLI exit codes, matching, reporting, and expectation failure
+- Trace-order auditing for completion after deny and completion without a prior decision
+- 47 tests covering allow paths, denial paths, traversal, trace order, malformed input, CLI exit codes, matching, reporting, and expectation failure
 
 The evaluator never executes the proposed action. It gives a tool adapter or reviewer a concrete policy decision and the reasons behind it.
 
@@ -85,6 +90,9 @@ The evaluator never executes the proposed action. It gives a tool adapter or rev
 | [Secret forwarding](scenarios/05-secret-forwarding.json) | Secret-like action arguments | Deny |
 | [Cross-tenant read](scenarios/06-cross-tenant-read.json) | Tenant ownership boundary | Deny |
 | [Expired approval](scenarios/07-expired-approval.json) | Time-bounded authority | Deny |
+| [Path traversal](scenarios/08-path-traversal.json) | Canonical resource boundary | Deny |
+| [Double-encoded traversal](scenarios/09-encoded-traversal.json) | Repeated decoding before matching | Deny |
+| [Safe encoded filename](scenarios/10-canonical-encoded-resource.json) | Canonical matching without blanket rejection | Allow |
 
 Each scenario states its expected result. The engine computes the decision independently. A suite failure means the computed decision no longer matches that expectation.
 
@@ -95,8 +103,12 @@ Generated reports are checked into [`reports/`](reports/) so the control behavio
 - [Prompt injection case file](reports/03-prompt-injection.md)
 - [Secret forwarding case file](reports/05-secret-forwarding.md)
 - [Complete JSON suite](reports/suite.json)
+- [Completion after deny trace audit](reports/traces/02-completion-after-deny.md)
+- [Complete trace audit suite](reports/traces/suite.json)
 
 Raw action arguments are intentionally absent from reports. Findings carry rule IDs and limited metadata, not tokens or payload contents.
+
+Trace events are evaluated in recorded order. A `tool.completed` event must have a preceding `policy.decision` event with `allow` for the same action. A later decision cannot retroactively authorize an earlier completion.
 
 ## Policy model
 
@@ -122,6 +134,7 @@ See [`docs/FORMAT.md`](docs/FORMAT.md) for the full input contract and [`policie
 src/             evaluator, validation, reporters, CLI
 policies/        explicit authority rules
 scenarios/       reproducible allow and deny cases
+traces/          ordered decision and completion fixtures
 reports/         generated Markdown and JSON evidence
 test/            unit and behavior tests
 docs/FORMAT.md   input semantics and constraints
@@ -130,7 +143,7 @@ THREAT-MODEL.md  assets, boundaries, abuse cases, limits
 
 ## Design limits
 
-This is a policy evaluation lab, not a sandbox, policy enforcement point, prompt-injection classifier, or production authorization service. It cannot verify that a caller supplied truthful identity, provenance, or approval data. Secret detection is deliberately narrow and heuristic.
+This is a policy evaluation lab, not a sandbox, policy enforcement point, prompt-injection classifier, or production authorization service. It cannot verify that a caller supplied truthful identity, provenance, approval data, or a complete trace. Secret detection is deliberately narrow and heuristic.
 
 A passing scenario means the engine behaved as the case expected. It is not a security certification for an agent or its tools.
 

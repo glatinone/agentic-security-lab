@@ -1,0 +1,44 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.3.0",
+  "scenario": {
+    "id": "encoded-resource-traversal-blocked",
+    "title": "A double-encoded parent segment attempts to bypass scope checks",
+    "purpose": "Confirm that resource decoding reaches a stable form before traversal checks."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 0,
+    "denied": 1,
+    "findings": 1,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "read-through-encoded-parent",
+      "capability": "repository.read",
+      "operation": "read",
+      "resource": "repository://glatinone/docs/%252e%252e/private/notes.txt",
+      "canonicalResource": null,
+      "decision": "deny",
+      "expectedDecision": "deny",
+      "matchedExpectation": true,
+      "matchedPolicyRule": null,
+      "findings": [
+        {
+          "ruleId": "ASL-110",
+          "title": "Resource identifier is unsafe or ambiguous",
+          "severity": "critical",
+          "explanation": "Resource identifiers are canonicalized before matching and traversal forms fail closed.",
+          "detail": "Resource repository://glatinone/docs/%252e%252e/private/notes.txt was rejected: resource contains a traversal segment.",
+          "evidence": {
+            "reason": "resource contains a traversal segment"
+          }
+        }
+      ]
+    }
+  ]
+}

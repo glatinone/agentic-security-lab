@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "id": "safe-encoded-resource-canonicalized",
+  "title": "A harmless encoded filename is canonicalized before matching",
+  "purpose": "Show that canonicalization is not a blanket rejection of percent-encoded resources.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-reviewer",
+    "declaredCapabilities": ["repository.read"]
+  },
+  "actions": [
+    {
+      "id": "read-encoded-readme",
+      "capability": "repository.read",
+      "operation": "read",
+      "resource": "repository://glatinone/%52EADME.md",
+      "arguments": {},
+      "expectedDecision": "allow"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { anyMatch, findSecretKinds, getTenantFromResource } from "./matchers.js";
+import { anyMatch, findSecretKinds, getTenantFromResource, inspectResource } from "./matchers.js";
 import { finding } from "./rule-catalog.js";
 import { validatePolicy, validateScenario } from "./validation.js";
 
@@ -52,6 +52,17 @@ function untrustedInfluence(action, evidenceById) {
 
 export function evaluateAction({ action, actor, policy, evidenceById, evaluatedAt }) {
   const findings = [];
+  const inspectedResource = inspectResource(action.resource);
+  const evaluatedAction = inspectedResource.ok
+    ? { ...action, resource: inspectedResource.canonical }
+    : action;
+  if (!inspectedResource.ok) {
+    findings.push(
+      finding("ASL-110", `Resource ${action.resource} was rejected: ${inspectedResource.reason}.`, {
+        reason: inspectedResource.reason,
+      }),
+    );
+  }
   const declared = actor.declaredCapabilities.some((capability) => anyMatch([capability], action.capability));
   if (!declared) {
     findings.push(
@@ -62,7 +73,7 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
   }
 
   const actorTenant = actor.tenant ?? null;
-  const resourceTenant = action.tenant ?? getTenantFromResource(action.resource);
+  const resourceTenant = action.tenant ?? (inspectedResource.ok ? getTenantFromResource(evaluatedAction.resource) : null);
   if (actorTenant && resourceTenant && actorTenant !== resourceTenant) {
     findings.push(
       finding("ASL-107", `Actor tenant ${actorTenant} cannot access resource tenant ${resourceTenant}.`, {
@@ -81,7 +92,7 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
     );
   }
 
-  const matchingRules = policy.rules.filter((rule) => ruleMatches(rule, action));
+  const matchingRules = inspectedResource.ok ? policy.rules.filter((rule) => ruleMatches(rule, evaluatedAction)) : [];
   const denyRule = matchingRules.find((rule) => rule.effect === "deny");
   const allowRule = matchingRules.find((rule) => rule.effect === "allow");
   let matchedRule = denyRule ?? allowRule ?? null;
@@ -92,14 +103,14 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
         policyRuleId: denyRule.id,
       }),
     );
-  } else if (!allowRule && policy.defaultDecision === "deny") {
+  } else if (inspectedResource.ok && !allowRule && policy.defaultDecision === "deny") {
     findings.push(
       finding("ASL-102", `No allow rule covers ${action.capability} ${action.operation} ${action.resource}.`),
     );
   }
 
   if (allowRule?.blockUntrustedInfluence && SENSITIVE_OPERATIONS.has(action.operation)) {
-    const sources = untrustedInfluence(action, evidenceById);
+    const sources = untrustedInfluence(evaluatedAction, evidenceById);
     if (sources.length) {
       findings.push(
         finding("ASL-109", `Sensitive action was influenced by untrusted evidence: ${sources.map(({ id }) => id).join(", ")}.`, {
@@ -110,7 +121,7 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
   }
 
   if (allowRule?.requireApproval) {
-    findings.push(...approvalFindings(action, evaluatedAt));
+    findings.push(...approvalFindings(evaluatedAction, evaluatedAt));
   }
 
   const blocked = findings.length > 0;
@@ -122,6 +133,7 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
     capability: action.capability,
     operation: action.operation,
     resource: action.resource,
+    canonicalResource: inspectedResource.ok ? inspectedResource.canonical : null,
     decision,
     expectedDecision: action.expectedDecision,
     matchedExpectation,
@@ -148,7 +160,7 @@ export function evaluateScenario(rawScenario, rawPolicy) {
 
   return {
     reportVersion: "1.0",
-    engineVersion: "0.2.0",
+    engineVersion: "0.3.0",
     scenario: {
       id: scenario.id,
       title: scenario.title,

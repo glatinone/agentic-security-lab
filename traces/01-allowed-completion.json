@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "id": "allowed-action-completes",
+  "title": "Tool completion follows an allow decision",
+  "events": [
+    {
+      "id": "decision-read",
+      "type": "policy.decision",
+      "actionId": "read-readme",
+      "decision": "allow"
+    },
+    {
+      "id": "completion-read",
+      "type": "tool.completed",
+      "actionId": "read-readme",
+      "outcome": "success"
+    }
+  ],
+  "expectedFindings": []
+}

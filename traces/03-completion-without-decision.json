@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "id": "completion-without-policy-decision",
+  "title": "Tool completion has no preceding policy decision",
+  "events": [
+    {
+      "id": "completion-send",
+      "type": "tool.completed",
+      "actionId": "send-report",
+      "outcome": "success"
+    }
+  ],
+  "expectedFindings": ["ASL-202"]
+}

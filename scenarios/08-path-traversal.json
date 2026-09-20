@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "id": "resource-path-traversal-blocked",
+  "title": "A repository read attempts to escape its path scope",
+  "purpose": "Confirm that traversal is rejected before a broad repository rule can match.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-reviewer",
+    "declaredCapabilities": ["repository.read"]
+  },
+  "actions": [
+    {
+      "id": "read-through-parent-segment",
+      "capability": "repository.read",
+      "operation": "read",
+      "resource": "repository://glatinone/docs/../private/notes.txt",
+      "arguments": {},
+      "expectedDecision": "deny"
+    }
+  ]
+}

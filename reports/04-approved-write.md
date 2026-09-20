@@ -1,9 +1,9 @@
 # Evaluation: A maintainer applies one approved documentation update
 
-**Result:** PASS  
-**Scenario:** `approved-scoped-write`  
-**Policy:** `portfolio-agent-v1`  
-**Evaluation time:** 2026-09-20T10:00:00.000Z
+- Result: **PASS**
+- Scenario: `approved-scoped-write`
+- Policy: `portfolio-agent-v1`
+- Evaluation time: 2026-09-20T10:00:00.000Z
 
 ## Summary
 

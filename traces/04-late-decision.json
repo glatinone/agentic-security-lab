@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "id": "decision-recorded-after-completion",
+  "title": "An allow decision appears too late to authorize completion",
+  "events": [
+    {
+      "id": "completion-delete",
+      "type": "tool.completed",
+      "actionId": "delete-draft",
+      "outcome": "success"
+    },
+    {
+      "id": "decision-delete",
+      "type": "policy.decision",
+      "actionId": "delete-draft",
+      "decision": "allow"
+    }
+  ],
+  "expectedFindings": ["ASL-202"]
+}

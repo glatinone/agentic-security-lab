@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "id": "denied-action-still-completes",
+  "title": "Tool completion appears after a deny decision",
+  "events": [
+    {
+      "id": "decision-write",
+      "type": "policy.decision",
+      "actionId": "write-readme",
+      "decision": "deny"
+    },
+    {
+      "id": "completion-write",
+      "type": "tool.completed",
+      "actionId": "write-readme",
+      "outcome": "success"
+    }
+  ],
+  "expectedFindings": ["ASL-201"]
+}

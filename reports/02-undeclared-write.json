@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.2.0",
+  "engineVersion": "0.3.0",
   "scenario": {
     "id": "undeclared-write-capability",
     "title": "A read-only agent proposes a repository update",
@@ -22,6 +22,7 @@
       "capability": "repository.write",
       "operation": "update",
       "resource": "repository://glatinone/profile/README.md",
+      "canonicalResource": "repository://glatinone/profile/README.md",
       "decision": "deny",
       "expectedDecision": "deny",
       "matchedExpectation": true,

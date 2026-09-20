@@ -1,0 +1,32 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.3.0",
+  "trace": {
+    "id": "decision-recorded-after-completion",
+    "title": "An allow decision appears too late to authorize completion"
+  },
+  "result": "pass",
+  "summary": {
+    "events": 2,
+    "decisions": 1,
+    "completions": 1,
+    "findings": 1,
+    "matchedExpectation": true
+  },
+  "expectedFindings": [
+    "ASL-202"
+  ],
+  "findings": [
+    {
+      "actionId": "delete-draft",
+      "eventId": "completion-delete",
+      "eventIndex": 0,
+      "ruleId": "ASL-202",
+      "title": "Tool completed without a preceding policy decision",
+      "severity": "critical",
+      "explanation": "Every tool completion must be preceded by an allow decision for the same action.",
+      "detail": "Completion event completion-delete has no preceding policy decision for action delete-draft.",
+      "evidence": {}
+    }
+  ]
+}

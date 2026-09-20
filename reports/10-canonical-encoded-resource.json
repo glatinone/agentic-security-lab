@@ -2,9 +2,9 @@
   "reportVersion": "1.0",
   "engineVersion": "0.3.0",
   "scenario": {
-    "id": "scoped-repository-read",
-    "title": "Read a file inside the declared repository scope",
-    "purpose": "Establish the normal allow path before testing policy failures."
+    "id": "safe-encoded-resource-canonicalized",
+    "title": "A harmless encoded filename is canonicalized before matching",
+    "purpose": "Show that canonicalization is not a blanket rejection of percent-encoded resources."
   },
   "policyId": "portfolio-agent-v1",
   "evaluatedAt": "2026-09-20T10:00:00.000Z",
@@ -18,11 +18,11 @@
   },
   "actions": [
     {
-      "actionId": "read-profile-readme",
+      "actionId": "read-encoded-readme",
       "capability": "repository.read",
       "operation": "read",
-      "resource": "repository://glatinone/profile/README.md",
-      "canonicalResource": "repository://glatinone/profile/README.md",
+      "resource": "repository://glatinone/%52EADME.md",
+      "canonicalResource": "repository://glatinone/README.md",
       "decision": "allow",
       "expectedDecision": "allow",
       "matchedExpectation": true,

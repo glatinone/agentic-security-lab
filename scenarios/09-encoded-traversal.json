@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "id": "encoded-resource-traversal-blocked",
+  "title": "A double-encoded parent segment attempts to bypass scope checks",
+  "purpose": "Confirm that resource decoding reaches a stable form before traversal checks.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-reviewer",
+    "declaredCapabilities": ["repository.read"]
+  },
+  "actions": [
+    {
+      "id": "read-through-encoded-parent",
+      "capability": "repository.read",
+      "operation": "read",
+      "resource": "repository://glatinone/docs/%252e%252e/private/notes.txt",
+      "arguments": {},
+      "expectedDecision": "deny"
+    }
+  ]
+}

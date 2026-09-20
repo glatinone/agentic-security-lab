@@ -1,7 +1,7 @@
-# Evaluation: Read a file inside the declared repository scope
+# Evaluation: A harmless encoded filename is canonicalized before matching
 
 - Result: **PASS**
-- Scenario: `scoped-repository-read`
+- Scenario: `safe-encoded-resource-canonicalized`
 - Policy: `portfolio-agent-v1`
 - Evaluation time: 2026-09-20T10:00:00.000Z
 
@@ -13,11 +13,12 @@
 
 ## Action decisions
 
-### read-profile-readme: ALLOW
+### read-encoded-readme: ALLOW
 
-- Requested: `read` on `repository://glatinone/profile/README.md` using `repository.read`
+- Requested: `read` on `repository://glatinone/%52EADME.md` using `repository.read`
 - Expected: `allow` (PASS)
 - Policy rule: `allow-repository-read`
+- Canonical resource: `repository://glatinone/README.md`
 - Findings: none
 
 ## Interpretation

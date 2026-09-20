@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.2.0",
+  "engineVersion": "0.3.0",
   "scenario": {
     "id": "approved-scoped-write",
     "title": "A maintainer applies one approved documentation update",
@@ -22,6 +22,7 @@
       "capability": "repository.write",
       "operation": "update",
       "resource": "repository://glatinone/agentic-security-lab/STATUS.md",
+      "canonicalResource": "repository://glatinone/agentic-security-lab/STATUS.md",
       "decision": "allow",
       "expectedDecision": "allow",
       "matchedExpectation": true,

@@ -42,3 +42,15 @@ test("CLI exposes the stable rule catalog", () => {
   assert.equal(result.status, 0);
   assert.match(result.stdout, /ASL-109 \[high\] Untrusted content influenced a sensitive action/);
 });
+
+test("CLI audits one trace", () => {
+  const result = run(["audit", "traces/02-completion-after-deny.json"]);
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /ASL-201 critical/);
+});
+
+test("CLI audits the trace directory", () => {
+  const result = run(["audit-suite", "traces"]);
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /4\/4 traces matched expectations/);
+});

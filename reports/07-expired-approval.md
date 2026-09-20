@@ -1,9 +1,9 @@
 # Evaluation: A valid write scope is reused after expiry
 
-**Result:** PASS  
-**Scenario:** `expired-approval-blocked`  
-**Policy:** `portfolio-agent-v1`  
-**Evaluation time:** 2026-09-20T10:00:00.000Z
+- Result: **PASS**
+- Scenario: `expired-approval-blocked`
+- Policy: `portfolio-agent-v1`
+- Evaluation time: 2026-09-20T10:00:00.000Z
 
 ## Summary
 
