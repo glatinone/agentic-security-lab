@@ -1,58 +1,67 @@
-# Initial Threat Model
+# Threat model
 
-**Scope:** the first local evaluation slice: an agent proposes file and tool actions, a policy gate decides, and an audit trace records the decision.
+## Scope
 
-**Status:** draft for prototype work. This is not a complete threat model for production deployments.
+Agentic Security Lab accepts a local scenario and policy, computes decisions for proposed actions, and renders a report. It does not execute an action or authenticate the data in the scenario.
+
+The main security question is narrow: given the declared actor, provenance, approval, and policy, does the evaluator fail closed at the tool boundary?
 
 ## Assets
 
-- Repository contents and source code.
-- Agent identity and declared capabilities.
-- Policy rules and approval decisions.
-- Secrets and credentials that must never enter an agent trace.
-- Audit integrity, including the relationship between a request and its outcome.
-- Operator attention and trust in the resulting report.
+- The authority boundary expressed by policy rules
+- Actor capability and tenant declarations
+- Approval scope and expiry
+- Action arguments that might contain credentials
+- Report integrity and reproducibility
+- Operator trust in an allow or deny result
 
 ## Trust boundaries
 
-1. User or upstream system to the agent.
-2. Agent/model output to the tool adapter.
-3. Tool adapter to the policy gate.
-4. Policy gate to the filesystem, repository, or external service.
-5. Runtime events to the audit sink and evaluation report.
+```text
+scenario JSON ──┐
+                ├── validation ── policy engine ── report
+policy JSON ────┘                       │
+                                       └── no action execution
+```
 
-The model is not a policy authority. Tool descriptions, retrieved content, repository files, and model-generated arguments are untrusted inputs.
+The scenario and policy files are untrusted local input. Evidence marked `untrusted` remains data and cannot become authority. Approval and actor identity are assertions supplied by the caller, not authenticated facts.
 
-## Initial abuse cases
+## Abuse cases and controls
 
-| ID | Abuse case | Impact | First control to evaluate |
+| ID | Abuse case | Implemented control | Residual risk |
 |---|---|---|---|
-| TM-01 | Prompt injection asks the agent to ignore the user's scope | Unauthorized action or data access | Treat instructions from tool data as untrusted; require policy evaluation |
-| TM-02 | Tool description disguises a write or exfiltration action as a read | Data loss or secret exposure | Capability allowlist and operation-level policy |
-| TM-03 | Agent receives more filesystem/repository authority than the task needs | Blast-radius expansion | Least privilege, scoped resources, explicit deny by default |
-| TM-04 | A denied action is not recorded or its reason is missing | Poor incident review and false confidence | Structured, tamper-evident audit events |
-| TM-05 | Secrets or personal data are copied into a trace or fixture | Credential compromise or privacy harm | Redaction checks and synthetic fixtures |
-| TM-06 | Evaluation only covers the happy path | Undetected control failure | Paired allow/deny scenarios and adversarial fixtures |
+| TM-01 | Retrieved text asks the agent to mutate a resource | Sensitive rules can block actions influenced by untrusted evidence | Provenance labels depend on the caller |
+| TM-02 | A read-only actor proposes a write | Capability must be declared independently from policy matching | Actor identity is not authenticated |
+| TM-03 | A broad allow rule crosses tenant ownership | Actor and resource tenant identifiers must match | Only the `tenant:<id>/...` convention is parsed |
+| TM-04 | Old approval is reused | Approval expiry is checked against the scenario evaluation time | Approval signatures are not verified |
+| TM-05 | Approval for one file is reused for another | Approval capability, operation, and resource must all match | Glob patterns can still be broad by operator choice |
+| TM-06 | A token enters action arguments | Known secret shapes force a deny and values are omitted from reports | Heuristics cannot recognize every secret |
+| TM-07 | An allow rule overlaps a deny rule | Explicit deny takes precedence | Confusing policies still need human review |
+| TM-08 | Large input exhausts memory | The CLI limits each JSON input to 1 MiB | Direct library callers must impose their own limit |
+| TM-09 | Expected output is edited to hide regression | Computed and expected decisions are reported separately | Repository write access can alter code and fixtures together |
 
-## Security assumptions
+## Security invariants
 
-- The local fixture contains synthetic data only.
-- The policy evaluator will be deterministic for a given input and policy version.
-- A future runtime must authenticate tool identity separately from model text.
-- Audit storage may be attacked; integrity and retention need a future design.
-- This prototype does not claim to prevent every prompt-injection or tool-abuse path.
+1. A policy allow does not grant a capability the actor did not declare.
+2. A matching deny rule wins over matching allow rules.
+3. Approval is bound to capability, operation, resource, and expiry.
+4. Tenant mismatch forces a deny even if a resource rule matches.
+5. A detected secret forces a deny and its value is not copied into the report.
+6. Untrusted evidence cannot drive a sensitive action when the rule enables that control.
+7. Unknown operations and malformed inputs fail before evaluation.
 
-## Out of scope for this slice
+The tests exercise each invariant. See [`test/engine.test.js`](test/engine.test.js) and [`test/validation.test.js`](test/validation.test.js).
 
-- Live GitHub, cloud, browser, or production-system access.
-- Active vulnerability testing or exploitation.
-- Credential validation, storage, rotation, or recovery.
-- Formal compliance, certification, or production-readiness claims.
+## Out of scope
 
-## Evaluation questions
+- Live tool interception or sandboxing
+- Authentication of agents, operators, tools, or approvals
+- Policy distribution, signing, revocation, or storage
+- Natural-language prompt-injection detection
+- Complete data-loss prevention
+- Tamper-evident audit storage
+- Formal verification or compliance certification
 
-1. Does the gate distinguish a read from a write at the operation level?
-2. Does it deny an action outside the declared resource scope?
-3. Can an operator reconstruct the decision from the trace alone?
-4. Are sensitive values excluded or redacted before persistence?
-5. Are the same inputs stable across repeated runs?
+## Safe use
+
+Use synthetic or redacted scenarios. Do not copy production prompts, tokens, customer records, or raw incident traces into this repository. Treat allow results as test evidence, not permission to execute a real action.

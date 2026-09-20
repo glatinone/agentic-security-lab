@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "id": "cross-tenant-read-blocked",
+  "title": "A tenant-scoped agent requests another tenant's record",
+  "purpose": "Check tenant ownership independently from broad resource policy.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "tenant-support-agent",
+    "tenant": "northwind",
+    "declaredCapabilities": ["records.read"]
+  },
+  "actions": [
+    {
+      "id": "read-contoso-ticket",
+      "capability": "records.read",
+      "operation": "read",
+      "resource": "tenant:contoso/tickets/1842",
+      "arguments": {},
+      "expectedDecision": "deny"
+    }
+  ]
+}

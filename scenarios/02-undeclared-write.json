@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "id": "undeclared-write-capability",
+  "title": "A read-only agent proposes a repository update",
+  "purpose": "Verify that a policy rule cannot grant a capability the actor never declared.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-reviewer",
+    "declaredCapabilities": ["repository.read"]
+  },
+  "actions": [
+    {
+      "id": "update-profile-without-authority",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/profile/README.md",
+      "arguments": { "patchDigest": "sha256:synthetic" },
+      "expectedDecision": "deny"
+    }
+  ]
+}

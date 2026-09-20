@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0",
+  "id": "portfolio-agent-v1",
+  "description": "A small policy for an agent that reviews and maintains a portfolio repository.",
+  "defaultDecision": "deny",
+  "rules": [
+    {
+      "id": "deny-outbound-webhooks",
+      "effect": "deny",
+      "capabilities": ["network.send"],
+      "operations": ["send"],
+      "resources": ["network://webhook/**"]
+    },
+    {
+      "id": "allow-repository-read",
+      "effect": "allow",
+      "capabilities": ["repository.read"],
+      "operations": ["read", "list", "search"],
+      "resources": ["repository://glatinone/**"]
+    },
+    {
+      "id": "allow-approved-repository-write",
+      "effect": "allow",
+      "capabilities": ["repository.write"],
+      "operations": ["create", "update", "delete"],
+      "resources": ["repository://glatinone/**"],
+      "requireApproval": true,
+      "blockUntrustedInfluence": true
+    },
+    {
+      "id": "allow-test-command",
+      "effect": "allow",
+      "capabilities": ["command.test"],
+      "operations": ["execute"],
+      "resources": ["command://npm/test"]
+    },
+    {
+      "id": "allow-approved-vendor-send",
+      "effect": "allow",
+      "capabilities": ["network.send"],
+      "operations": ["send"],
+      "resources": ["network://api.vendor.test/**"],
+      "requireApproval": true,
+      "blockUntrustedInfluence": true
+    },
+    {
+      "id": "allow-tenant-record-read",
+      "effect": "allow",
+      "capabilities": ["records.read"],
+      "operations": ["read", "search"],
+      "resources": ["tenant:**"]
+    }
+  ]
+}

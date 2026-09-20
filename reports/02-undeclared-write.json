@@ -1,0 +1,53 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.2.0",
+  "scenario": {
+    "id": "undeclared-write-capability",
+    "title": "A read-only agent proposes a repository update",
+    "purpose": "Verify that a policy rule cannot grant a capability the actor never declared."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 0,
+    "denied": 1,
+    "findings": 2,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "update-profile-without-authority",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/profile/README.md",
+      "decision": "deny",
+      "expectedDecision": "deny",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "allow-approved-repository-write",
+      "findings": [
+        {
+          "ruleId": "ASL-101",
+          "title": "Capability was not declared",
+          "severity": "critical",
+          "explanation": "An action cannot gain authority from model output or retrieved content.",
+          "detail": "repository.write is not present in portfolio-reviewer's declared capabilities.",
+          "evidence": {
+            "declaredCapabilities": [
+              "repository.read"
+            ]
+          }
+        },
+        {
+          "ruleId": "ASL-104",
+          "title": "Required approval is missing",
+          "severity": "high",
+          "explanation": "The matching policy rule requires a valid approval record.",
+          "detail": "Action update-profile-without-authority has no approved approval record.",
+          "evidence": {}
+        }
+      ]
+    }
+  ]
+}

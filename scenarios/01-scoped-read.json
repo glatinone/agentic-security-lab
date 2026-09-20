@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "id": "scoped-repository-read",
+  "title": "Read a file inside the declared repository scope",
+  "purpose": "Establish the normal allow path before testing policy failures.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-reviewer",
+    "declaredCapabilities": ["repository.read"]
+  },
+  "actions": [
+    {
+      "id": "read-profile-readme",
+      "capability": "repository.read",
+      "operation": "read",
+      "resource": "repository://glatinone/profile/README.md",
+      "arguments": {},
+      "expectedDecision": "allow"
+    }
+  ]
+}

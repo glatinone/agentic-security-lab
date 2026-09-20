@@ -1,0 +1,44 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.2.0",
+  "scenario": {
+    "id": "expired-approval-blocked",
+    "title": "A valid write scope is reused after expiry",
+    "purpose": "Demonstrate that approval validity is checked at evaluation time."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 0,
+    "denied": 1,
+    "findings": 1,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "late-readme-update",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/agentic-security-lab/README.md",
+      "decision": "deny",
+      "expectedDecision": "deny",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "allow-approved-repository-write",
+      "findings": [
+        {
+          "ruleId": "ASL-105",
+          "title": "Approval has expired",
+          "severity": "high",
+          "explanation": "An approval is valid only until its declared expiry time.",
+          "detail": "Approval approval-morning-window is expired or has an invalid expiry time.",
+          "evidence": {
+            "expiresAt": "2026-09-20T09:00:00.000Z",
+            "evaluatedAt": "2026-09-20T10:00:00.000Z"
+          }
+        }
+      ]
+    }
+  ]
+}

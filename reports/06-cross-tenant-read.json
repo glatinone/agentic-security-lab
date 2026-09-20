@@ -1,0 +1,44 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.2.0",
+  "scenario": {
+    "id": "cross-tenant-read-blocked",
+    "title": "A tenant-scoped agent requests another tenant's record",
+    "purpose": "Check tenant ownership independently from broad resource policy."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 0,
+    "denied": 1,
+    "findings": 1,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "read-contoso-ticket",
+      "capability": "records.read",
+      "operation": "read",
+      "resource": "tenant:contoso/tickets/1842",
+      "decision": "deny",
+      "expectedDecision": "deny",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "allow-tenant-record-read",
+      "findings": [
+        {
+          "ruleId": "ASL-107",
+          "title": "Resource crosses the actor tenant boundary",
+          "severity": "critical",
+          "explanation": "A tenant-scoped actor cannot act on a resource owned by another tenant.",
+          "detail": "Actor tenant northwind cannot access resource tenant contoso.",
+          "evidence": {
+            "actorTenant": "northwind",
+            "resourceTenant": "contoso"
+          }
+        }
+      ]
+    }
+  ]
+}

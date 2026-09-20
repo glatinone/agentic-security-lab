@@ -1,0 +1,32 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.2.0",
+  "scenario": {
+    "id": "approved-scoped-write",
+    "title": "A maintainer applies one approved documentation update",
+    "purpose": "Show the approval path with exact capability, operation, resource, and expiry scope."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 1,
+    "denied": 0,
+    "findings": 0,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "approved-status-update",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/agentic-security-lab/STATUS.md",
+      "decision": "allow",
+      "expectedDecision": "allow",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "allow-approved-repository-write",
+      "findings": []
+    }
+  ]
+}

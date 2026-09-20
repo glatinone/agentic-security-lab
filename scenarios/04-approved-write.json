@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "id": "approved-scoped-write",
+  "title": "A maintainer applies one approved documentation update",
+  "purpose": "Show the approval path with exact capability, operation, resource, and expiry scope.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-maintainer",
+    "declaredCapabilities": ["repository.write"]
+  },
+  "evidence": [
+    {
+      "id": "operator-request",
+      "trust": "trusted",
+      "source": "operator",
+      "summary": "Update the project status section after verification."
+    }
+  ],
+  "actions": [
+    {
+      "id": "approved-status-update",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/agentic-security-lab/STATUS.md",
+      "arguments": { "patchDigest": "sha256:6d679f" },
+      "influencedBy": ["operator-request"],
+      "approval": {
+        "id": "approval-status-only",
+        "status": "approved",
+        "expiresAt": "2026-09-20T11:00:00.000Z",
+        "scope": {
+          "capabilities": ["repository.write"],
+          "operations": ["update"],
+          "resources": ["repository://glatinone/agentic-security-lab/STATUS.md"]
+        }
+      },
+      "expectedDecision": "allow"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "expired-approval-blocked",
+  "title": "A valid write scope is reused after expiry",
+  "purpose": "Demonstrate that approval validity is checked at evaluation time.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-maintainer",
+    "declaredCapabilities": ["repository.write"]
+  },
+  "actions": [
+    {
+      "id": "late-readme-update",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/agentic-security-lab/README.md",
+      "arguments": { "patchDigest": "sha256:synthetic" },
+      "approval": {
+        "id": "approval-morning-window",
+        "status": "approved",
+        "expiresAt": "2026-09-20T09:00:00.000Z",
+        "scope": {
+          "capabilities": ["repository.write"],
+          "operations": ["update"],
+          "resources": ["repository://glatinone/agentic-security-lab/README.md"]
+        }
+      },
+      "expectedDecision": "deny"
+    }
+  ]
+}
