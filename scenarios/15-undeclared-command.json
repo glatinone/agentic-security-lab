@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "id": "read-only-actor-cannot-execute-tests",
+  "title": "A repository reviewer escalates from reading to command execution",
+  "purpose": "Show that a policy allow rule cannot grant a capability the actor did not declare.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-reviewer",
+    "declaredCapabilities": ["repository.read"]
+  },
+  "actions": [
+    {
+      "id": "run-test-command",
+      "capability": "command.test",
+      "operation": "execute",
+      "resource": "command://npm/test",
+      "arguments": { "workingDirectory": "agentic-security-lab" },
+      "expectedDecision": "deny"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "trace": {
     "id": "completion-without-policy-decision",
     "title": "Tool completion has no preceding policy decision"

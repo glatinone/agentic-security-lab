@@ -1,0 +1,45 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.4.0",
+  "scenario": {
+    "id": "rejected-approval-remains-denied",
+    "title": "A rejected deletion request is attached to the action",
+    "purpose": "Check that the presence of an approval object cannot substitute for approved status."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 0,
+    "denied": 1,
+    "findings": 1,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "delete-release-workflow",
+      "capability": "repository.write",
+      "operation": "delete",
+      "resource": "repository://glatinone/agentic-security-lab/.github/workflows/release.yml",
+      "canonicalResource": "repository://glatinone/agentic-security-lab/.github/workflows/release.yml",
+      "decision": "deny",
+      "expectedDecision": "deny",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "allow-approved-repository-write",
+      "matchedPolicyRules": [
+        "allow-approved-repository-write"
+      ],
+      "findings": [
+        {
+          "ruleId": "ASL-104",
+          "title": "Required approval is missing",
+          "severity": "high",
+          "explanation": "The matching policy rule requires a valid approval record.",
+          "detail": "Action delete-release-workflow has no approved approval record.",
+          "evidence": {}
+        }
+      ]
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 # Input format
 
-Agentic Security Lab evaluates two JSON documents: a policy and a scenario. Both use schema version `1.0`. The CLI rejects missing fields, duplicate identifiers, unsupported operations, unknown evidence references, and malformed approval scopes before policy evaluation starts.
+Agentic Security Lab evaluates two JSON documents: a policy and a scenario. Both use schema version `1.0`. The CLI rejects missing and unknown fields, duplicate identifiers, unsupported operations, unknown evidence references, and malformed approval scopes before policy evaluation starts. Strict fields prevent a typo in a security control from being ignored.
 
 ## Policy
 
-A policy is an ordered collection of allow and deny rules. Deny rules take precedence over allow rules. If no rule matches, `defaultDecision` applies.
+A policy is an ordered collection of allow and deny rules. Deny rules take precedence over allow rules. If no rule matches, `defaultDecision` applies. When several allow rules match, `requireApproval` and `blockUntrustedInfluence` obligations accumulate across them.
 
 ```json
 {
@@ -40,7 +40,7 @@ This keeps a broad rule such as `repository://owner/**` from accepting `reposito
 
 ## Scenario
 
-A scenario names the policy file relative to the scenario file. `evaluatedAt` fixes time-dependent approval checks so repeated runs produce the same result.
+A scenario names the policy file relative to the scenario file. `evaluatedAt` is required. It fixes time-dependent approval checks so repeated runs produce the same result.
 
 ```json
 {

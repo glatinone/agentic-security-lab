@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "scenario": {
     "id": "undeclared-write-capability",
     "title": "A read-only agent proposes a repository update",
@@ -27,6 +27,9 @@
       "expectedDecision": "deny",
       "matchedExpectation": true,
       "matchedPolicyRule": "allow-approved-repository-write",
+      "matchedPolicyRules": [
+        "allow-approved-repository-write"
+      ],
       "findings": [
         {
           "ruleId": "ASL-101",

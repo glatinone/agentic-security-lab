@@ -111,3 +111,83 @@ test("safe encoding is canonicalized before policy matching", async () => {
   assert.equal(report.actions[0].decision, "allow");
   assert.equal(report.actions[0].canonicalResource, "repository://glatinone/README.md");
 });
+
+test("overlapping allow rules merge approval obligations", async () => {
+  const overlapPolicy = {
+    ...policy,
+    rules: [
+      {
+        id: "broad-write",
+        effect: "allow",
+        capabilities: ["repository.write"],
+        operations: ["update"],
+        resources: ["repository://glatinone/**"],
+      },
+      {
+        id: "protected-profile-write",
+        effect: "allow",
+        capabilities: ["repository.write"],
+        operations: ["update"],
+        resources: ["repository://glatinone/profile/**"],
+        requireApproval: true,
+      },
+    ],
+  };
+  const input = {
+    ...(await scenario("01-scoped-read.json")),
+    id: "overlapping-approval-obligation",
+    actor: { id: "maintainer", declaredCapabilities: ["repository.write"] },
+    actions: [
+      {
+        id: "update-profile",
+        capability: "repository.write",
+        operation: "update",
+        resource: "repository://glatinone/profile/README.md",
+        expectedDecision: "deny",
+      },
+    ],
+  };
+  const report = evaluateScenario(input, overlapPolicy);
+  assert.deepEqual(report.actions[0].matchedPolicyRules, ["broad-write", "protected-profile-write"]);
+  assert.ok(report.actions[0].findings.some(({ ruleId }) => ruleId === "ASL-104"));
+});
+
+test("overlapping allow rules merge provenance obligations", async () => {
+  const overlapPolicy = {
+    ...policy,
+    rules: [
+      {
+        id: "broad-write",
+        effect: "allow",
+        capabilities: ["repository.write"],
+        operations: ["update"],
+        resources: ["repository://glatinone/**"],
+      },
+      {
+        id: "protected-profile-write",
+        effect: "allow",
+        capabilities: ["repository.write"],
+        operations: ["update"],
+        resources: ["repository://glatinone/profile/**"],
+        blockUntrustedInfluence: true,
+      },
+    ],
+  };
+  const input = {
+    ...(await scenario("03-prompt-injection.json")),
+    policy: "../policies/test.json",
+    actions: [
+      {
+        id: "update-profile",
+        capability: "repository.write",
+        operation: "update",
+        resource: "repository://glatinone/profile/README.md",
+        arguments: {},
+        influencedBy: ["readme-instruction"],
+        expectedDecision: "deny",
+      },
+    ],
+  };
+  const report = evaluateScenario(input, overlapPolicy);
+  assert.ok(report.actions[0].findings.some(({ ruleId }) => ruleId === "ASL-109"));
+});

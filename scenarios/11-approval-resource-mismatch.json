@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "approval-cannot-expand-resource-scope",
+  "title": "A documentation approval is presented for a workflow change",
+  "purpose": "Prove that an approval for one resource cannot authorize a sibling file.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-maintainer",
+    "declaredCapabilities": ["repository.write"]
+  },
+  "actions": [
+    {
+      "id": "change-release-workflow",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/agentic-security-lab/.github/workflows/release.yml",
+      "arguments": { "patchDigest": "sha256:fixture-workflow" },
+      "approval": {
+        "id": "approval-readme-only",
+        "status": "approved",
+        "expiresAt": "2026-09-20T11:00:00.000Z",
+        "scope": {
+          "capabilities": ["repository.write"],
+          "operations": ["update"],
+          "resources": ["repository://glatinone/agentic-security-lab/README.md"]
+        }
+      },
+      "expectedDecision": "deny"
+    }
+  ]
+}

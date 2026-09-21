@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Agentic Security Lab architecture</title>
+  <desc id="desc">Inputs enter a deterministic evaluation boundary and produce bounded reports. Tool execution remains outside the boundary.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#607386"/></marker>
+  </defs>
+  <rect width="1200" height="720" fill="#f4f1ea"/>
+  <text x="64" y="62" fill="#172029" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700">Architecture and trust boundaries</text>
+  <text x="64" y="91" fill="#56626c" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15">DATA IN  →  DETERMINISTIC DECISION  →  BOUNDED EVIDENCE</text>
+  <rect x="330" y="125" width="540" height="470" rx="12" fill="#e8edf0" stroke="#3d5568" stroke-width="3"/>
+  <text x="360" y="164" fill="#3d5568" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15" font-weight="700">EVALUATOR TRUST BOUNDARY</text>
+  <g fill="#ffffff" stroke="#8798a5" stroke-width="2">
+    <rect x="370" y="196" width="460" height="67" rx="7"/>
+    <rect x="370" y="284" width="460" height="67" rx="7"/>
+    <rect x="370" y="372" width="460" height="67" rx="7"/>
+    <rect x="370" y="460" width="460" height="92" rx="7"/>
+  </g>
+  <g fill="#172029" font-family="Arial, Helvetica, sans-serif">
+    <text x="398" y="226" font-size="20" font-weight="700">1. Validate</text><text x="520" y="226" font-size="17">shape, references, time, supported operations</text>
+    <text x="398" y="314" font-size="20" font-weight="700">2. Canonicalize</text><text x="556" y="314" font-size="17">resources before scope matching</text>
+    <text x="398" y="402" font-size="20" font-weight="700">3. Evaluate</text><text x="525" y="402" font-size="17">authority, policy, tenant, approval, provenance</text>
+    <text x="398" y="490" font-size="20" font-weight="700">4. Report</text><text x="510" y="490" font-size="17">decision, rule IDs, bounded evidence</text>
+    <text x="398" y="522" font-size="15" fill="#56626c">Raw action arguments do not cross into generated reports.</text>
+  </g>
+  <g fill="#fff" stroke="#607386" stroke-width="2">
+    <rect x="62" y="154" width="208" height="62" rx="6"/><rect x="62" y="236" width="208" height="62" rx="6"/>
+    <rect x="62" y="318" width="208" height="62" rx="6"/><rect x="62" y="400" width="208" height="62" rx="6"/>
+    <rect x="930" y="176" width="208" height="62" rx="6"/><rect x="930" y="258" width="208" height="62" rx="6"/>
+    <rect x="930" y="340" width="208" height="62" rx="6"/>
+  </g>
+  <g fill="#172029" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="middle">
+    <text x="166" y="192">Actor declaration</text><text x="166" y="274">Policy</text><text x="166" y="356">Evidence provenance</text><text x="166" y="438">Proposed actions</text>
+    <text x="1034" y="214">JSON evidence</text><text x="1034" y="296">Markdown case file</text><text x="1034" y="378">Terminal decision</text>
+  </g>
+  <g stroke="#607386" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
+    <path d="M270 185H330"/><path d="M270 267H330"/><path d="M270 349H330"/><path d="M270 431H330"/>
+    <path d="M870 207H930"/><path d="M870 289H930"/><path d="M870 371H930"/>
+  </g>
+  <rect x="385" y="635" width="430" height="55" rx="6" fill="#f7e4dc" stroke="#b95738" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="600" y="658" text-anchor="middle" fill="#7f321f" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Tool runtime and enforcement stay outside the lab</text>
+  <text x="600" y="680" text-anchor="middle" fill="#7f321f" font-family="Arial, Helvetica, sans-serif" font-size="14">A caller must stop dispatch when the decision is deny.</text>
+  <path d="M600 595V635" stroke="#b95738" stroke-width="2" stroke-dasharray="6 5"/>
+</svg>

@@ -1,6 +1,6 @@
 {
   "name": "agentic-security-lab",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Deterministic policy evaluator and execution-trace auditor for AI agent actions",
   "type": "module",
   "private": true,
@@ -9,11 +9,16 @@
   },
   "scripts": {
     "test": "node --test",
-    "check": "node --check src/cli.js && node --check src/trace-audit.js && node --test",
+    "check": "node --check src/cli.js && node --check src/enforcement.js && node --check src/trace-audit.js && node --test",
     "demo": "node src/cli.js evaluate scenarios/01-scoped-read.json",
+    "demo:data": "node scripts/build-demo-data.js",
+    "demo:web": "node scripts/serve-demo.js",
+    "example:support": "node examples/support-agent/run.js",
     "suite": "node src/cli.js suite scenarios",
     "audit": "node src/cli.js audit-suite traces",
-    "reports": "node scripts/build-reports.js"
+    "reports": "node scripts/build-reports.js",
+    "generated:check": "npm run reports && npm run demo:data && git diff --exit-code -- reports demo/data.js",
+    "verify": "npm run check && npm run suite && npm run audit && npm run generated:check"
   },
   "engines": {
     "node": ">=20"

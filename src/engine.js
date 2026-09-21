@@ -94,8 +94,9 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
 
   const matchingRules = inspectedResource.ok ? policy.rules.filter((rule) => ruleMatches(rule, evaluatedAction)) : [];
   const denyRule = matchingRules.find((rule) => rule.effect === "deny");
-  const allowRule = matchingRules.find((rule) => rule.effect === "allow");
-  let matchedRule = denyRule ?? allowRule ?? null;
+  const allowRules = matchingRules.filter((rule) => rule.effect === "allow");
+  const allowRule = allowRules[0] ?? null;
+  const matchedRule = denyRule ?? allowRule;
 
   if (denyRule) {
     findings.push(
@@ -109,7 +110,7 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
     );
   }
 
-  if (allowRule?.blockUntrustedInfluence && SENSITIVE_OPERATIONS.has(action.operation)) {
+  if (allowRules.some((rule) => rule.blockUntrustedInfluence) && SENSITIVE_OPERATIONS.has(action.operation)) {
     const sources = untrustedInfluence(evaluatedAction, evidenceById);
     if (sources.length) {
       findings.push(
@@ -120,7 +121,7 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
     }
   }
 
-  if (allowRule?.requireApproval) {
+  if (allowRules.some((rule) => rule.requireApproval)) {
     findings.push(...approvalFindings(evaluatedAction, evaluatedAt));
   }
 
@@ -138,6 +139,7 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
     expectedDecision: action.expectedDecision,
     matchedExpectation,
     matchedPolicyRule: matchedRule?.id ?? null,
+    matchedPolicyRules: matchingRules.map(({ id }) => id),
     findings,
   };
 }
@@ -145,10 +147,7 @@ export function evaluateAction({ action, actor, policy, evidenceById, evaluatedA
 export function evaluateScenario(rawScenario, rawPolicy) {
   const scenario = validateScenario(rawScenario);
   const policy = validatePolicy(rawPolicy);
-  const evaluatedAt = scenario.evaluatedAt ?? "2026-01-01T00:00:00.000Z";
-  if (!Number.isFinite(Date.parse(evaluatedAt))) {
-    throw new TypeError("evaluatedAt must be a valid ISO date when present");
-  }
+  const evaluatedAt = scenario.evaluatedAt;
 
   const evidenceById = new Map((scenario.evidence ?? []).map((item) => [item.id, item]));
   const actions = scenario.actions.map((action) =>
@@ -160,7 +159,7 @@ export function evaluateScenario(rawScenario, rawPolicy) {
 
   return {
     reportVersion: "1.0",
-    engineVersion: "0.3.0",
+    engineVersion: "0.4.0",
     scenario: {
       id: scenario.id,
       title: scenario.title,

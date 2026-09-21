@@ -1,7 +1,7 @@
 [
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "scoped-repository-read",
       "title": "Read a file inside the declared repository scope",
@@ -28,13 +28,16 @@
         "expectedDecision": "allow",
         "matchedExpectation": true,
         "matchedPolicyRule": "allow-repository-read",
+        "matchedPolicyRules": [
+          "allow-repository-read"
+        ],
         "findings": []
       }
     ]
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "undeclared-write-capability",
       "title": "A read-only agent proposes a repository update",
@@ -61,6 +64,9 @@
         "expectedDecision": "deny",
         "matchedExpectation": true,
         "matchedPolicyRule": "allow-approved-repository-write",
+        "matchedPolicyRules": [
+          "allow-approved-repository-write"
+        ],
         "findings": [
           {
             "ruleId": "ASL-101",
@@ -88,7 +94,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "untrusted-content-cannot-trigger-write",
       "title": "Repository text tries to turn a review into a write",
@@ -115,6 +121,9 @@
         "expectedDecision": "deny",
         "matchedExpectation": true,
         "matchedPolicyRule": "allow-approved-repository-write",
+        "matchedPolicyRules": [
+          "allow-approved-repository-write"
+        ],
         "findings": [
           {
             "ruleId": "ASL-109",
@@ -134,7 +143,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "approved-scoped-write",
       "title": "A maintainer applies one approved documentation update",
@@ -161,13 +170,16 @@
         "expectedDecision": "allow",
         "matchedExpectation": true,
         "matchedPolicyRule": "allow-approved-repository-write",
+        "matchedPolicyRules": [
+          "allow-approved-repository-write"
+        ],
         "findings": []
       }
     ]
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "secret-forwarding-blocked",
       "title": "An approved vendor request contains a token",
@@ -194,6 +206,9 @@
         "expectedDecision": "deny",
         "matchedExpectation": true,
         "matchedPolicyRule": "allow-approved-vendor-send",
+        "matchedPolicyRules": [
+          "allow-approved-vendor-send"
+        ],
         "findings": [
           {
             "ruleId": "ASL-108",
@@ -214,7 +229,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "cross-tenant-read-blocked",
       "title": "A tenant-scoped agent requests another tenant's record",
@@ -241,6 +256,9 @@
         "expectedDecision": "deny",
         "matchedExpectation": true,
         "matchedPolicyRule": "allow-tenant-record-read",
+        "matchedPolicyRules": [
+          "allow-tenant-record-read"
+        ],
         "findings": [
           {
             "ruleId": "ASL-107",
@@ -259,7 +277,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "expired-approval-blocked",
       "title": "A valid write scope is reused after expiry",
@@ -286,6 +304,9 @@
         "expectedDecision": "deny",
         "matchedExpectation": true,
         "matchedPolicyRule": "allow-approved-repository-write",
+        "matchedPolicyRules": [
+          "allow-approved-repository-write"
+        ],
         "findings": [
           {
             "ruleId": "ASL-105",
@@ -304,7 +325,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "resource-path-traversal-blocked",
       "title": "A repository read attempts to escape its path scope",
@@ -331,6 +352,7 @@
         "expectedDecision": "deny",
         "matchedExpectation": true,
         "matchedPolicyRule": null,
+        "matchedPolicyRules": [],
         "findings": [
           {
             "ruleId": "ASL-110",
@@ -348,7 +370,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "encoded-resource-traversal-blocked",
       "title": "A double-encoded parent segment attempts to bypass scope checks",
@@ -375,6 +397,7 @@
         "expectedDecision": "deny",
         "matchedExpectation": true,
         "matchedPolicyRule": null,
+        "matchedPolicyRules": [],
         "findings": [
           {
             "ruleId": "ASL-110",
@@ -392,7 +415,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "scenario": {
       "id": "safe-encoded-resource-canonicalized",
       "title": "A harmless encoded filename is canonicalized before matching",
@@ -419,7 +442,376 @@
         "expectedDecision": "allow",
         "matchedExpectation": true,
         "matchedPolicyRule": "allow-repository-read",
+        "matchedPolicyRules": [
+          "allow-repository-read"
+        ],
         "findings": []
+      }
+    ]
+  },
+  {
+    "reportVersion": "1.0",
+    "engineVersion": "0.4.0",
+    "scenario": {
+      "id": "approval-cannot-expand-resource-scope",
+      "title": "A documentation approval is presented for a workflow change",
+      "purpose": "Prove that an approval for one resource cannot authorize a sibling file."
+    },
+    "policyId": "portfolio-agent-v1",
+    "evaluatedAt": "2026-09-20T10:00:00.000Z",
+    "result": "pass",
+    "summary": {
+      "actions": 1,
+      "allowed": 0,
+      "denied": 1,
+      "findings": 1,
+      "expectationMismatches": 0
+    },
+    "actions": [
+      {
+        "actionId": "change-release-workflow",
+        "capability": "repository.write",
+        "operation": "update",
+        "resource": "repository://glatinone/agentic-security-lab/.github/workflows/release.yml",
+        "canonicalResource": "repository://glatinone/agentic-security-lab/.github/workflows/release.yml",
+        "decision": "deny",
+        "expectedDecision": "deny",
+        "matchedExpectation": true,
+        "matchedPolicyRule": "allow-approved-repository-write",
+        "matchedPolicyRules": [
+          "allow-approved-repository-write"
+        ],
+        "findings": [
+          {
+            "ruleId": "ASL-106",
+            "title": "Approval scope does not cover the action",
+            "severity": "critical",
+            "explanation": "Capability, operation, and resource must all match the approval scope.",
+            "detail": "Approval approval-readme-only does not cover repository.write on repository://glatinone/agentic-security-lab/.github/workflows/release.yml.",
+            "evidence": {
+              "approvalScope": {
+                "capabilities": [
+                  "repository.write"
+                ],
+                "operations": [
+                  "update"
+                ],
+                "resources": [
+                  "repository://glatinone/agentic-security-lab/README.md"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "reportVersion": "1.0",
+    "engineVersion": "0.4.0",
+    "scenario": {
+      "id": "rejected-approval-remains-denied",
+      "title": "A rejected deletion request is attached to the action",
+      "purpose": "Check that the presence of an approval object cannot substitute for approved status."
+    },
+    "policyId": "portfolio-agent-v1",
+    "evaluatedAt": "2026-09-20T10:00:00.000Z",
+    "result": "pass",
+    "summary": {
+      "actions": 1,
+      "allowed": 0,
+      "denied": 1,
+      "findings": 1,
+      "expectationMismatches": 0
+    },
+    "actions": [
+      {
+        "actionId": "delete-release-workflow",
+        "capability": "repository.write",
+        "operation": "delete",
+        "resource": "repository://glatinone/agentic-security-lab/.github/workflows/release.yml",
+        "canonicalResource": "repository://glatinone/agentic-security-lab/.github/workflows/release.yml",
+        "decision": "deny",
+        "expectedDecision": "deny",
+        "matchedExpectation": true,
+        "matchedPolicyRule": "allow-approved-repository-write",
+        "matchedPolicyRules": [
+          "allow-approved-repository-write"
+        ],
+        "findings": [
+          {
+            "ruleId": "ASL-104",
+            "title": "Required approval is missing",
+            "severity": "high",
+            "explanation": "The matching policy rule requires a valid approval record.",
+            "detail": "Action delete-release-workflow has no approved approval record.",
+            "evidence": {}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "reportVersion": "1.0",
+    "engineVersion": "0.4.0",
+    "scenario": {
+      "id": "untrusted-content-can-inform-read-only-discovery",
+      "title": "Repository text points to another file for inspection",
+      "purpose": "Separate safe read-only discovery from sensitive actions driven by untrusted content."
+    },
+    "policyId": "portfolio-agent-v1",
+    "evaluatedAt": "2026-09-20T10:00:00.000Z",
+    "result": "pass",
+    "summary": {
+      "actions": 1,
+      "allowed": 1,
+      "denied": 0,
+      "findings": 0,
+      "expectationMismatches": 0
+    },
+    "actions": [
+      {
+        "actionId": "read-linked-threat-model",
+        "capability": "repository.read",
+        "operation": "read",
+        "resource": "repository://glatinone/agentic-security-lab/THREAT-MODEL.md",
+        "canonicalResource": "repository://glatinone/agentic-security-lab/THREAT-MODEL.md",
+        "decision": "allow",
+        "expectedDecision": "allow",
+        "matchedExpectation": true,
+        "matchedPolicyRule": "allow-repository-read",
+        "matchedPolicyRules": [
+          "allow-repository-read"
+        ],
+        "findings": []
+      }
+    ]
+  },
+  {
+    "reportVersion": "1.0",
+    "engineVersion": "0.4.0",
+    "scenario": {
+      "id": "explicit-webhook-deny-precedes-approval",
+      "title": "An agent tries to send a result to a webhook",
+      "purpose": "Prove that approval data cannot override an explicit policy deny."
+    },
+    "policyId": "portfolio-agent-v1",
+    "evaluatedAt": "2026-09-20T10:00:00.000Z",
+    "result": "pass",
+    "summary": {
+      "actions": 1,
+      "allowed": 0,
+      "denied": 1,
+      "findings": 1,
+      "expectationMismatches": 0
+    },
+    "actions": [
+      {
+        "actionId": "send-build-result",
+        "capability": "network.send",
+        "operation": "send",
+        "resource": "network://webhook/build-status",
+        "canonicalResource": "network://webhook/build-status",
+        "decision": "deny",
+        "expectedDecision": "deny",
+        "matchedExpectation": true,
+        "matchedPolicyRule": "deny-outbound-webhooks",
+        "matchedPolicyRules": [
+          "deny-outbound-webhooks"
+        ],
+        "findings": [
+          {
+            "ruleId": "ASL-103",
+            "title": "Explicit deny rule matched",
+            "severity": "critical",
+            "explanation": "A matching deny rule takes precedence over allow rules.",
+            "detail": "Policy rule deny-outbound-webhooks explicitly denies this action.",
+            "evidence": {
+              "policyRuleId": "deny-outbound-webhooks"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "reportVersion": "1.0",
+    "engineVersion": "0.4.0",
+    "scenario": {
+      "id": "read-only-actor-cannot-execute-tests",
+      "title": "A repository reviewer escalates from reading to command execution",
+      "purpose": "Show that a policy allow rule cannot grant a capability the actor did not declare."
+    },
+    "policyId": "portfolio-agent-v1",
+    "evaluatedAt": "2026-09-20T10:00:00.000Z",
+    "result": "pass",
+    "summary": {
+      "actions": 1,
+      "allowed": 0,
+      "denied": 1,
+      "findings": 1,
+      "expectationMismatches": 0
+    },
+    "actions": [
+      {
+        "actionId": "run-test-command",
+        "capability": "command.test",
+        "operation": "execute",
+        "resource": "command://npm/test",
+        "canonicalResource": "command://npm/test",
+        "decision": "deny",
+        "expectedDecision": "deny",
+        "matchedExpectation": true,
+        "matchedPolicyRule": "allow-test-command",
+        "matchedPolicyRules": [
+          "allow-test-command"
+        ],
+        "findings": [
+          {
+            "ruleId": "ASL-101",
+            "title": "Capability was not declared",
+            "severity": "critical",
+            "explanation": "An action cannot gain authority from model output or retrieved content.",
+            "detail": "command.test is not present in portfolio-reviewer's declared capabilities.",
+            "evidence": {
+              "declaredCapabilities": [
+                "repository.read"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "reportVersion": "1.0",
+    "engineVersion": "0.4.0",
+    "scenario": {
+      "id": "review-plan-crosses-read-write-boundary",
+      "title": "A maintainer reads broadly but writes only the approved file",
+      "purpose": "Exercise a realistic two-action plan with different authority requirements."
+    },
+    "policyId": "portfolio-agent-v1",
+    "evaluatedAt": "2026-09-20T10:00:00.000Z",
+    "result": "pass",
+    "summary": {
+      "actions": 2,
+      "allowed": 2,
+      "denied": 0,
+      "findings": 0,
+      "expectationMismatches": 0
+    },
+    "actions": [
+      {
+        "actionId": "read-test-directory",
+        "capability": "repository.read",
+        "operation": "list",
+        "resource": "repository://glatinone/agentic-security-lab/test",
+        "canonicalResource": "repository://glatinone/agentic-security-lab/test",
+        "decision": "allow",
+        "expectedDecision": "allow",
+        "matchedExpectation": true,
+        "matchedPolicyRule": "allow-repository-read",
+        "matchedPolicyRules": [
+          "allow-repository-read"
+        ],
+        "findings": []
+      },
+      {
+        "actionId": "update-verified-status",
+        "capability": "repository.write",
+        "operation": "update",
+        "resource": "repository://glatinone/agentic-security-lab/STATUS.md",
+        "canonicalResource": "repository://glatinone/agentic-security-lab/STATUS.md",
+        "decision": "allow",
+        "expectedDecision": "allow",
+        "matchedExpectation": true,
+        "matchedPolicyRule": "allow-approved-repository-write",
+        "matchedPolicyRules": [
+          "allow-approved-repository-write"
+        ],
+        "findings": []
+      }
+    ]
+  },
+  {
+    "reportVersion": "1.0",
+    "engineVersion": "0.4.0",
+    "scenario": {
+      "id": "same-tenant-record-read",
+      "title": "A tenant support agent reads a record in its own tenant",
+      "purpose": "Provide the positive control for tenant isolation."
+    },
+    "policyId": "portfolio-agent-v1",
+    "evaluatedAt": "2026-09-20T10:00:00.000Z",
+    "result": "pass",
+    "summary": {
+      "actions": 1,
+      "allowed": 1,
+      "denied": 0,
+      "findings": 0,
+      "expectationMismatches": 0
+    },
+    "actions": [
+      {
+        "actionId": "read-northwind-ticket",
+        "capability": "records.read",
+        "operation": "read",
+        "resource": "tenant:northwind/tickets/1842",
+        "canonicalResource": "tenant:northwind/tickets/1842",
+        "decision": "allow",
+        "expectedDecision": "allow",
+        "matchedExpectation": true,
+        "matchedPolicyRule": "allow-tenant-record-read",
+        "matchedPolicyRules": [
+          "allow-tenant-record-read"
+        ],
+        "findings": []
+      }
+    ]
+  },
+  {
+    "reportVersion": "1.0",
+    "engineVersion": "0.4.0",
+    "scenario": {
+      "id": "ambiguous-resource-separator-blocked",
+      "title": "A repository path mixes URL and filesystem separators",
+      "purpose": "Check that an ambiguous resource cannot bypass canonical policy matching."
+    },
+    "policyId": "portfolio-agent-v1",
+    "evaluatedAt": "2026-09-20T10:00:00.000Z",
+    "result": "pass",
+    "summary": {
+      "actions": 1,
+      "allowed": 0,
+      "denied": 1,
+      "findings": 1,
+      "expectationMismatches": 0
+    },
+    "actions": [
+      {
+        "actionId": "read-ambiguous-path",
+        "capability": "repository.read",
+        "operation": "read",
+        "resource": "repository://glatinone/agentic-security-lab\\README.md",
+        "canonicalResource": null,
+        "decision": "deny",
+        "expectedDecision": "deny",
+        "matchedExpectation": true,
+        "matchedPolicyRule": null,
+        "matchedPolicyRules": [],
+        "findings": [
+          {
+            "ruleId": "ASL-110",
+            "title": "Resource identifier is unsafe or ambiguous",
+            "severity": "critical",
+            "explanation": "Resource identifiers are canonicalized before matching and traversal forms fail closed.",
+            "detail": "Resource repository://glatinone/agentic-security-lab\\README.md was rejected: resource contains a forbidden separator or control character.",
+            "evidence": {
+              "reason": "resource contains a forbidden separator or control character"
+            }
+          }
+        ]
       }
     ]
   }

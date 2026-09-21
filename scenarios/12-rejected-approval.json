@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "rejected-approval-remains-denied",
+  "title": "A rejected deletion request is attached to the action",
+  "purpose": "Check that the presence of an approval object cannot substitute for approved status.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-maintainer",
+    "declaredCapabilities": ["repository.write"]
+  },
+  "actions": [
+    {
+      "id": "delete-release-workflow",
+      "capability": "repository.write",
+      "operation": "delete",
+      "resource": "repository://glatinone/agentic-security-lab/.github/workflows/release.yml",
+      "arguments": {},
+      "approval": {
+        "id": "rejected-destructive-change",
+        "status": "rejected",
+        "expiresAt": "2026-09-20T11:00:00.000Z",
+        "scope": {
+          "capabilities": ["repository.write"],
+          "operations": ["delete"],
+          "resources": ["repository://glatinone/agentic-security-lab/.github/workflows/release.yml"]
+        }
+      },
+      "expectedDecision": "deny"
+    }
+  ]
+}

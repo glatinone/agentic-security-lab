@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "scenario": {
     "id": "resource-path-traversal-blocked",
     "title": "A repository read attempts to escape its path scope",
@@ -27,6 +27,7 @@
       "expectedDecision": "deny",
       "matchedExpectation": true,
       "matchedPolicyRule": null,
+      "matchedPolicyRules": [],
       "findings": [
         {
           "ruleId": "ASL-110",

@@ -1,0 +1,51 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.4.0",
+  "scenario": {
+    "id": "review-plan-crosses-read-write-boundary",
+    "title": "A maintainer reads broadly but writes only the approved file",
+    "purpose": "Exercise a realistic two-action plan with different authority requirements."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 2,
+    "allowed": 2,
+    "denied": 0,
+    "findings": 0,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "read-test-directory",
+      "capability": "repository.read",
+      "operation": "list",
+      "resource": "repository://glatinone/agentic-security-lab/test",
+      "canonicalResource": "repository://glatinone/agentic-security-lab/test",
+      "decision": "allow",
+      "expectedDecision": "allow",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "allow-repository-read",
+      "matchedPolicyRules": [
+        "allow-repository-read"
+      ],
+      "findings": []
+    },
+    {
+      "actionId": "update-verified-status",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/agentic-security-lab/STATUS.md",
+      "canonicalResource": "repository://glatinone/agentic-security-lab/STATUS.md",
+      "decision": "allow",
+      "expectedDecision": "allow",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "allow-approved-repository-write",
+      "matchedPolicyRules": [
+        "allow-approved-repository-write"
+      ],
+      "findings": []
+    }
+  ]
+}

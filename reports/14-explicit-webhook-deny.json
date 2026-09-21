@@ -1,0 +1,47 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.4.0",
+  "scenario": {
+    "id": "explicit-webhook-deny-precedes-approval",
+    "title": "An agent tries to send a result to a webhook",
+    "purpose": "Prove that approval data cannot override an explicit policy deny."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 0,
+    "denied": 1,
+    "findings": 1,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "send-build-result",
+      "capability": "network.send",
+      "operation": "send",
+      "resource": "network://webhook/build-status",
+      "canonicalResource": "network://webhook/build-status",
+      "decision": "deny",
+      "expectedDecision": "deny",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "deny-outbound-webhooks",
+      "matchedPolicyRules": [
+        "deny-outbound-webhooks"
+      ],
+      "findings": [
+        {
+          "ruleId": "ASL-103",
+          "title": "Explicit deny rule matched",
+          "severity": "critical",
+          "explanation": "A matching deny rule takes precedence over allow rules.",
+          "detail": "Policy rule deny-outbound-webhooks explicitly denies this action.",
+          "evidence": {
+            "policyRuleId": "deny-outbound-webhooks"
+          }
+        }
+      ]
+    }
+  ]
+}

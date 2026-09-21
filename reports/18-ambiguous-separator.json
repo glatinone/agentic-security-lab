@@ -1,0 +1,45 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.4.0",
+  "scenario": {
+    "id": "ambiguous-resource-separator-blocked",
+    "title": "A repository path mixes URL and filesystem separators",
+    "purpose": "Check that an ambiguous resource cannot bypass canonical policy matching."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 0,
+    "denied": 1,
+    "findings": 1,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "read-ambiguous-path",
+      "capability": "repository.read",
+      "operation": "read",
+      "resource": "repository://glatinone/agentic-security-lab\\README.md",
+      "canonicalResource": null,
+      "decision": "deny",
+      "expectedDecision": "deny",
+      "matchedExpectation": true,
+      "matchedPolicyRule": null,
+      "matchedPolicyRules": [],
+      "findings": [
+        {
+          "ruleId": "ASL-110",
+          "title": "Resource identifier is unsafe or ambiguous",
+          "severity": "critical",
+          "explanation": "Resource identifiers are canonicalized before matching and traversal forms fail closed.",
+          "detail": "Resource repository://glatinone/agentic-security-lab\\README.md was rejected: resource contains a forbidden separator or control character.",
+          "evidence": {
+            "reason": "resource contains a forbidden separator or control character"
+          }
+        }
+      ]
+    }
+  ]
+}

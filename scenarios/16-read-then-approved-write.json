@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "id": "review-plan-crosses-read-write-boundary",
+  "title": "A maintainer reads broadly but writes only the approved file",
+  "purpose": "Exercise a realistic two-action plan with different authority requirements.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-maintainer",
+    "declaredCapabilities": ["repository.read", "repository.write"]
+  },
+  "evidence": [
+    {
+      "id": "operator-task",
+      "trust": "trusted",
+      "source": "operator",
+      "summary": "Review project status and update one verified count in STATUS.md."
+    }
+  ],
+  "actions": [
+    {
+      "id": "read-test-directory",
+      "capability": "repository.read",
+      "operation": "list",
+      "resource": "repository://glatinone/agentic-security-lab/test",
+      "arguments": {},
+      "influencedBy": ["operator-task"],
+      "expectedDecision": "allow"
+    },
+    {
+      "id": "update-verified-status",
+      "capability": "repository.write",
+      "operation": "update",
+      "resource": "repository://glatinone/agentic-security-lab/STATUS.md",
+      "arguments": { "patchDigest": "sha256:fixture-status" },
+      "influencedBy": ["operator-task"],
+      "approval": {
+        "id": "approval-status-update",
+        "status": "approved",
+        "expiresAt": "2026-09-20T11:00:00.000Z",
+        "scope": {
+          "capabilities": ["repository.write"],
+          "operations": ["update"],
+          "resources": ["repository://glatinone/agentic-security-lab/STATUS.md"]
+        }
+      },
+      "expectedDecision": "allow"
+    }
+  ]
+}

@@ -2,11 +2,17 @@
 
 [![verify](https://github.com/glatinone/agentic-security-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/glatinone/agentic-security-lab/actions/workflows/ci.yml)
 
-**A local policy evaluator and execution-trace auditor for AI agent actions.**
+**A deny-by-default policy boundary, enforced before an AI agent can call a tool.**
+
+**[Open the live workbench](https://glatinone.github.io/agentic-security-lab/)**
+
+![The browser workbench denying a repository write influenced by untrusted content](assets/screenshots/policy-workbench-deny.png)
+
+*Real workbench output from scenario 03. The approved write scope exists, but untrusted repository text still cannot drive the mutation.*
 
 Agent evaluations often grade the final answer. This lab examines a different failure boundary: what an agent tries to do with tools. It checks proposed actions against declared capabilities, resource scope, tenant ownership, approval records, data provenance, and a deny-by-default policy.
 
-The result is decision evidence that can be read in a terminal, stored as JSON, or reviewed as a Markdown case file. A separate trace audit checks whether a tool completion violated that decision boundary.
+The result is decision evidence that can be read in a terminal, stored as JSON, or reviewed as a Markdown case file. A separate trace audit checks whether a tool completion violated that boundary. For live code, `enforceAndDispatch` puts the decision in front of the function call. A deny produces a receipt and zero tool invocations.
 
 ```text
 proposed action
@@ -32,6 +38,15 @@ cd agentic-security-lab
 npm ci
 npm run suite
 ```
+
+Open the local action-control workbench:
+
+```bash
+npm run demo:data
+npm run demo:web
+```
+
+Then visit `http://127.0.0.1:4173/demo/`. Choose a curated case, edit its policy inputs, and evaluate it with the same engine used by the CLI and tests. The workbench stores nothing and makes no network calls.
 
 Evaluate one case:
 
@@ -62,6 +77,14 @@ node src/cli.js audit-suite traces
 node src/cli.js rules
 ```
 
+Prove the execution boundary with a small support-agent adapter:
+
+```bash
+npm run example:support
+```
+
+The example reads a customer ticket, then handles a hostile instruction asking it to send a debug token. The read runs. The send does not. Its final output is `{"outboundMessages":0}`. See [the integration contract](docs/INTEGRATION.md).
+
 ## What is implemented
 
 - Deny-by-default policy evaluation with explicit deny precedence
@@ -75,9 +98,15 @@ node src/cli.js rules
 - Strict input validation, a 1 MiB input limit, and distinct CLI exit codes
 - Terminal, JSON, and Markdown reports
 - Trace-order auditing for completion after deny and completion without a prior decision
-- 47 tests covering allow paths, denial paths, traversal, trace order, malformed input, CLI exit codes, matching, reporting, and expectation failure
+- A production request contract with no scenario-only `expectedDecision` field
+- An enforcement dispatcher that never calls a registered tool after deny
+- Redacted receipts for blocked, completed, missing-adapter, and tool-error outcomes
+- 18 executable policy cases, including positive controls and multi-action plans
+- 57 tests covering allow paths, denial paths, dispatch count, redacted receipts, traversal, trace order, malformed input, CLI exit codes, matching, reporting, and expectation failure
+- A browser workbench that imports the production evaluator instead of reimplementing decisions
+- Architecture, decision semantics, ADRs, and an artifact provenance catalog
 
-The evaluator never executes the proposed action. It gives a tool adapter or reviewer a concrete policy decision and the reasons behind it.
+The scenario evaluator never executes a proposed action. Runtime integrations use `enforceAndDispatch`, which invokes only an explicitly registered capability after an allow decision.
 
 ## Scenario suite
 
@@ -93,6 +122,14 @@ The evaluator never executes the proposed action. It gives a tool adapter or rev
 | [Path traversal](scenarios/08-path-traversal.json) | Canonical resource boundary | Deny |
 | [Double-encoded traversal](scenarios/09-encoded-traversal.json) | Repeated decoding before matching | Deny |
 | [Safe encoded filename](scenarios/10-canonical-encoded-resource.json) | Canonical matching without blanket rejection | Allow |
+| [Approval resource mismatch](scenarios/11-approval-resource-mismatch.json) | Exact approval resource scope | Deny |
+| [Rejected approval](scenarios/12-rejected-approval.json) | Approval status | Deny |
+| [Untrusted read-only discovery](scenarios/13-untrusted-read-only.json) | Sensitive versus read-only provenance control | Allow |
+| [Explicit webhook deny](scenarios/14-explicit-webhook-deny.json) | Deny precedence over supplied approval | Deny |
+| [Undeclared command execution](scenarios/15-undeclared-command.json) | Actor capability versus policy allowance | Deny |
+| [Read then approved write](scenarios/16-read-then-approved-write.json) | Multi-action authority boundary | Allow |
+| [Same-tenant record read](scenarios/17-same-tenant-read.json) | Tenant isolation positive control | Allow |
+| [Ambiguous separator](scenarios/18-ambiguous-separator.json) | Filesystem and URL separator ambiguity | Deny |
 
 Each scenario states its expected result. The engine computes the decision independently. A suite failure means the computed decision no longer matches that expectation.
 
@@ -131,19 +168,33 @@ See [`docs/FORMAT.md`](docs/FORMAT.md) for the full input contract and [`policie
 ## Repository map
 
 ```text
-src/             evaluator, validation, reporters, CLI
+src/             evaluator, enforcement boundary, validation, reporters, CLI
+examples/        runnable tool-dispatch integration
 policies/        explicit authority rules
 scenarios/       reproducible allow and deny cases
 traces/          ordered decision and completion fixtures
 reports/         generated Markdown and JSON evidence
 test/            unit and behavior tests
 docs/FORMAT.md   input semantics and constraints
+demo/            local browser action-control workbench
+docs/adr/        accepted architecture decisions
+PROJECT-PLAN.md  phased roadmap and exit criteria
 THREAT-MODEL.md  assets, boundaries, abuse cases, limits
 ```
 
+## How the repository is built
+
+The project follows a phased plan rather than accumulating disconnected controls. Phase 0 defines the product and its boundaries. Phase 1 makes those claims inspectable through executable cases, generated reports, diagrams, and the browser workbench. Later phases cover portable schemas, runtime adapters, an adversarial benchmark, and release engineering.
+
+- [Project plan and phase exit criteria](PROJECT-PLAN.md)
+- [Architecture and trust boundaries](docs/ARCHITECTURE.md)
+- [Deterministic decision model](docs/DECISION-MODEL.md)
+- [Authored and generated artifact catalog](docs/ARTIFACTS.md)
+- [Threat model](THREAT-MODEL.md)
+
 ## Design limits
 
-This is a policy evaluation lab, not a sandbox, policy enforcement point, prompt-injection classifier, or production authorization service. It cannot verify that a caller supplied truthful identity, provenance, approval data, or a complete trace. Secret detection is deliberately narrow and heuristic.
+This is not a sandbox, prompt-injection classifier, identity provider, or hosted authorization service. The in-process dispatcher is an enforcement point only for calls routed through it. It cannot stop code that bypasses the adapter, verify that a caller supplied truthful identity or provenance, or prove that a trace is complete. Secret detection is deliberately narrow and heuristic.
 
 A passing scenario means the engine behaved as the case expected. It is not a security certification for an agent or its tools.
 

@@ -85,3 +85,35 @@ test("malformed approval scope is rejected before evaluation", () => {
 test("invalid evaluation timestamps are rejected", () => {
   assert.throws(() => validateScenario({ ...validScenario, evaluatedAt: "next Tuesday" }), InputError);
 });
+
+test("evaluation time is required for reproducible decisions", () => {
+  const { evaluatedAt, ...withoutTime } = validScenario;
+  assert.throws(() => validateScenario(withoutTime), /Scenario validation failed/);
+});
+
+test("unknown policy rule fields fail closed", () => {
+  const policy = {
+    ...validPolicy,
+    rules: [{ ...validPolicy.rules[0], requireApprovel: true }],
+  };
+  assert.throws(
+    () => validatePolicy(policy),
+    (error) => error instanceof InputError && error.details.includes("rules[0].requireApprovel is not a supported field"),
+  );
+});
+
+test("unknown action and approval fields fail closed", () => {
+  const scenario = {
+    ...validScenario,
+    actions: [
+      {
+        ...validScenario.actions[0],
+        expectedDecison: "allow",
+      },
+    ],
+  };
+  assert.throws(
+    () => validateScenario(scenario),
+    (error) => error instanceof InputError && error.details.includes("actions[0].expectedDecison is not a supported field"),
+  );
+});

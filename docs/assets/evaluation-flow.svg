@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Agent action evaluation flow</title>
+  <desc id="desc">A fixed series of checks returns deny on any finding and allow only when policy and controls agree.</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#647481"/></marker></defs>
+  <rect width="1200" height="900" fill="#0d1115"/>
+  <text x="70" y="62" fill="#f2f4f5" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700">Evaluation flow</text>
+  <text x="70" y="90" fill="#8fa1ae" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15">ONE OR MORE FINDINGS ALWAYS PRODUCE DENY</text>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <g fill="#182129" stroke="#526472" stroke-width="2">
+      <rect x="365" y="128" width="470" height="64" rx="7"/><rect x="365" y="232" width="470" height="64" rx="7"/>
+      <rect x="365" y="336" width="470" height="64" rx="7"/><rect x="365" y="440" width="470" height="64" rx="7"/>
+      <rect x="365" y="544" width="470" height="64" rx="7"/><rect x="365" y="648" width="470" height="64" rx="7"/>
+    </g>
+    <g fill="#f2f4f5" font-size="19" font-weight="700">
+      <text x="394" y="168">1  Validate the complete input</text>
+      <text x="394" y="272">2  Canonicalize the resource</text>
+      <text x="394" y="376">3  Check declared capability and tenant</text>
+      <text x="394" y="480">4  Match allow and deny rules</text>
+      <text x="394" y="584">5  Check provenance and secret shapes</text>
+      <text x="394" y="688">6  Check approval status, time, and scope</text>
+    </g>
+    <g fill="#8fa1ae" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace">
+      <text x="703" y="168">SCHEMA</text><text x="698" y="272">ASL-110</text><text x="678" y="376">ASL-101 / 107</text>
+      <text x="665" y="480">ASL-102 / 103</text><text x="663" y="584">ASL-108 / 109</text><text x="650" y="688">ASL-104 / 105 / 106</text>
+    </g>
+  </g>
+  <g stroke="#647481" stroke-width="2.5" fill="none" marker-end="url(#a)">
+    <path d="M600 192V232"/><path d="M600 296V336"/><path d="M600 400V440"/><path d="M600 504V544"/><path d="M600 608V648"/>
+  </g>
+  <path d="M365 160H247V741" stroke="#a64f38" stroke-width="2" fill="none" stroke-dasharray="7 6"/>
+  <path d="M365 264H275V741M365 368H303V741M365 472H331V741M365 576H345V741M365 680H359V741" stroke="#a64f38" stroke-width="2" fill="none" stroke-dasharray="7 6"/>
+  <rect x="140" y="741" width="395" height="94" rx="8" fill="#2b1814" stroke="#c06549" stroke-width="2"/>
+  <text x="338" y="780" text-anchor="middle" fill="#efb29b" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">DENY</text>
+  <text x="338" y="810" text-anchor="middle" fill="#d9c2ba" font-family="Arial, Helvetica, sans-serif" font-size="16">Return all findings and bounded evidence</text>
+  <path d="M600 712V741" stroke="#598a6c" stroke-width="3" marker-end="url(#a)"/>
+  <rect x="665" y="741" width="395" height="94" rx="8" fill="#14251c" stroke="#5a9b72" stroke-width="2"/>
+  <text x="862" y="780" text-anchor="middle" fill="#a7dab8" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">ALLOW</text>
+  <text x="862" y="810" text-anchor="middle" fill="#bfd1c5" font-family="Arial, Helvetica, sans-serif" font-size="16">No findings and an allow path exists</text>
+  <path d="M600 741H665" stroke="#598a6c" stroke-width="3"/>
+</svg>

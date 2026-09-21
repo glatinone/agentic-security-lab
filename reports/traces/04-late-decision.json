@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "trace": {
     "id": "decision-recorded-after-completion",
     "title": "An allow decision appears too late to authorize completion"

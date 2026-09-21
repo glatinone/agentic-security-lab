@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Agentic Security Lab</title>
+  <desc id="desc">A policy boundary diagram between proposed agent actions and tool execution.</desc>
+  <rect width="1200" height="630" fill="#0b0d0f"/>
+  <path d="M0 78H1200M0 552H1200" stroke="#273039" stroke-width="2"/>
+  <path d="M96 78V552M1104 78V552" stroke="#273039" stroke-width="2"/>
+  <text x="96" y="48" fill="#8fa1b3" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18" letter-spacing="3">GLATINONE / CONTROL EVIDENCE / 01</text>
+  <text x="96" y="178" fill="#f0f3f5" font-family="Arial, Helvetica, sans-serif" font-size="70" font-weight="700">Agentic Security Lab</text>
+  <text x="98" y="226" fill="#aab7c2" font-family="Arial, Helvetica, sans-serif" font-size="25">Did the agent stay inside the authority it was given?</text>
+  <g transform="translate(98 307)">
+    <rect width="262" height="116" rx="8" fill="#14191e" stroke="#53616d" stroke-width="2"/>
+    <text x="22" y="35" fill="#8fa1b3" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15">PROPOSED ACTION</text>
+    <text x="22" y="71" fill="#f0f3f5" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">repository.write</text>
+    <text x="22" y="97" fill="#aab7c2" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="14">update /profile/README.md</text>
+  </g>
+  <path d="M360 365H459" stroke="#8fa1b3" stroke-width="3"/>
+  <path d="M447 353L459 365L447 377" fill="none" stroke="#8fa1b3" stroke-width="3"/>
+  <g transform="translate(460 275)">
+    <rect width="276" height="180" rx="8" fill="#182029" stroke="#5f7689" stroke-width="2"/>
+    <text x="24" y="38" fill="#9fb4c5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15">POLICY BOUNDARY</text>
+    <path d="M24 60H252" stroke="#374754"/>
+    <text x="24" y="91" fill="#f0f3f5" font-family="Arial, Helvetica, sans-serif" font-size="18">Capability</text>
+    <text x="24" y="120" fill="#f0f3f5" font-family="Arial, Helvetica, sans-serif" font-size="18">Resource scope</text>
+    <text x="24" y="149" fill="#f0f3f5" font-family="Arial, Helvetica, sans-serif" font-size="18">Approval + provenance</text>
+  </g>
+  <path d="M736 365H836" stroke="#8fa1b3" stroke-width="3"/>
+  <path d="M824 353L836 365L824 377" fill="none" stroke="#8fa1b3" stroke-width="3"/>
+  <g transform="translate(837 307)">
+    <rect width="267" height="116" rx="8" fill="#201714" stroke="#bc6848" stroke-width="2"/>
+    <circle cx="37" cy="40" r="12" fill="#bc6848"/>
+    <text x="62" y="47" fill="#efb29b" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18" font-weight="700">DENY / ASL-109</text>
+    <text x="24" y="80" fill="#f0f3f5" font-family="Arial, Helvetica, sans-serif" font-size="17">Untrusted content influenced</text>
+    <text x="24" y="102" fill="#f0f3f5" font-family="Arial, Helvetica, sans-serif" font-size="17">a protected write.</text>
+  </g>
+  <text x="98" y="510" fill="#8fa1b3" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="17">DETERMINISTIC  ·  LOCAL  ·  EVIDENCE-FIRST  ·  NO TOOL EXECUTION</text>
+  <text x="1104" y="592" text-anchor="end" fill="#6f7f8d" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15">agentic-security-lab</text>
+</svg>

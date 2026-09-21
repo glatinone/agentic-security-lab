@@ -1,0 +1,49 @@
+{
+  "reportVersion": "1.0",
+  "engineVersion": "0.4.0",
+  "scenario": {
+    "id": "read-only-actor-cannot-execute-tests",
+    "title": "A repository reviewer escalates from reading to command execution",
+    "purpose": "Show that a policy allow rule cannot grant a capability the actor did not declare."
+  },
+  "policyId": "portfolio-agent-v1",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "result": "pass",
+  "summary": {
+    "actions": 1,
+    "allowed": 0,
+    "denied": 1,
+    "findings": 1,
+    "expectationMismatches": 0
+  },
+  "actions": [
+    {
+      "actionId": "run-test-command",
+      "capability": "command.test",
+      "operation": "execute",
+      "resource": "command://npm/test",
+      "canonicalResource": "command://npm/test",
+      "decision": "deny",
+      "expectedDecision": "deny",
+      "matchedExpectation": true,
+      "matchedPolicyRule": "allow-test-command",
+      "matchedPolicyRules": [
+        "allow-test-command"
+      ],
+      "findings": [
+        {
+          "ruleId": "ASL-101",
+          "title": "Capability was not declared",
+          "severity": "critical",
+          "explanation": "An action cannot gain authority from model output or retrieved content.",
+          "detail": "command.test is not present in portfolio-reviewer's declared capabilities.",
+          "evidence": {
+            "declaredCapabilities": [
+              "repository.read"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "explicit-webhook-deny-precedes-approval",
+  "title": "An agent tries to send a result to a webhook",
+  "purpose": "Prove that approval data cannot override an explicit policy deny.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-maintainer",
+    "declaredCapabilities": ["network.send"]
+  },
+  "actions": [
+    {
+      "id": "send-build-result",
+      "capability": "network.send",
+      "operation": "send",
+      "resource": "network://webhook/build-status",
+      "arguments": { "bodyDigest": "sha256:fixture-result" },
+      "approval": {
+        "id": "operator-supplied-webhook",
+        "status": "approved",
+        "expiresAt": "2026-09-20T11:00:00.000Z",
+        "scope": {
+          "capabilities": ["network.send"],
+          "operations": ["send"],
+          "resources": ["network://webhook/build-status"]
+        }
+      },
+      "expectedDecision": "deny"
+    }
+  ]
+}

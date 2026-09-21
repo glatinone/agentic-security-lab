@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "scenario": {
     "id": "approved-scoped-write",
     "title": "A maintainer applies one approved documentation update",
@@ -27,6 +27,9 @@
       "expectedDecision": "allow",
       "matchedExpectation": true,
       "matchedPolicyRule": "allow-approved-repository-write",
+      "matchedPolicyRules": [
+        "allow-approved-repository-write"
+      ],
       "findings": []
     }
   ]

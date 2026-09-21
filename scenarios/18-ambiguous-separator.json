@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "id": "ambiguous-resource-separator-blocked",
+  "title": "A repository path mixes URL and filesystem separators",
+  "purpose": "Check that an ambiguous resource cannot bypass canonical policy matching.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "portfolio-reviewer",
+    "declaredCapabilities": ["repository.read"]
+  },
+  "actions": [
+    {
+      "id": "read-ambiguous-path",
+      "capability": "repository.read",
+      "operation": "read",
+      "resource": "repository://glatinone/agentic-security-lab\\README.md",
+      "arguments": {},
+      "expectedDecision": "deny"
+    }
+  ]
+}

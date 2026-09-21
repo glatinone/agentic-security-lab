@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "id": "same-tenant-record-read",
+  "title": "A tenant support agent reads a record in its own tenant",
+  "purpose": "Provide the positive control for tenant isolation.",
+  "policy": "../policies/portfolio-agent-v1.json",
+  "evaluatedAt": "2026-09-20T10:00:00.000Z",
+  "actor": {
+    "id": "tenant-support-agent",
+    "tenant": "northwind",
+    "declaredCapabilities": ["records.read"]
+  },
+  "actions": [
+    {
+      "id": "read-northwind-ticket",
+      "capability": "records.read",
+      "operation": "read",
+      "resource": "tenant:northwind/tickets/1842",
+      "arguments": {},
+      "expectedDecision": "allow"
+    }
+  ]
+}

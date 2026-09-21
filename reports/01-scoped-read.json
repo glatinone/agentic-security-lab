@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "scenario": {
     "id": "scoped-repository-read",
     "title": "Read a file inside the declared repository scope",
@@ -27,6 +27,9 @@
       "expectedDecision": "allow",
       "matchedExpectation": true,
       "matchedPolicyRule": "allow-repository-read",
+      "matchedPolicyRules": [
+        "allow-repository-read"
+      ],
       "findings": []
     }
   ]

@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "scenario": {
     "id": "encoded-resource-traversal-blocked",
     "title": "A double-encoded parent segment attempts to bypass scope checks",
@@ -27,6 +27,7 @@
       "expectedDecision": "deny",
       "matchedExpectation": true,
       "matchedPolicyRule": null,
+      "matchedPolicyRules": [],
       "findings": [
         {
           "ruleId": "ASL-110",

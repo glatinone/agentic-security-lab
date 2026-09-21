@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "scenario": {
     "id": "cross-tenant-read-blocked",
     "title": "A tenant-scoped agent requests another tenant's record",
@@ -27,6 +27,9 @@
       "expectedDecision": "deny",
       "matchedExpectation": true,
       "matchedPolicyRule": "allow-tenant-record-read",
+      "matchedPolicyRules": [
+        "allow-tenant-record-read"
+      ],
       "findings": [
         {
           "ruleId": "ASL-107",

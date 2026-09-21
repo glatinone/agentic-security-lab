@@ -1,7 +1,7 @@
 [
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "trace": {
       "id": "allowed-action-completes",
       "title": "Tool completion follows an allow decision"
@@ -19,7 +19,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "trace": {
       "id": "denied-action-still-completes",
       "title": "Tool completion appears after a deny decision"
@@ -53,7 +53,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "trace": {
       "id": "completion-without-policy-decision",
       "title": "Tool completion has no preceding policy decision"
@@ -85,7 +85,7 @@
   },
   {
     "reportVersion": "1.0",
-    "engineVersion": "0.3.0",
+    "engineVersion": "0.4.0",
     "trace": {
       "id": "decision-recorded-after-completion",
       "title": "An allow decision appears too late to authorize completion"

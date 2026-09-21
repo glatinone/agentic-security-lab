@@ -1,6 +1,6 @@
 {
   "reportVersion": "1.0",
-  "engineVersion": "0.3.0",
+  "engineVersion": "0.4.0",
   "trace": {
     "id": "denied-action-still-completes",
     "title": "Tool completion appears after a deny decision"

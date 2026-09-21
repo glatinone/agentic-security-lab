@@ -44,7 +44,7 @@ export function auditTrace(rawTrace) {
 
   return {
     reportVersion: "1.0",
-    engineVersion: "0.3.0",
+    engineVersion: "0.4.0",
     trace: { id: trace.id, title: trace.title },
     result: matchedExpectation ? "pass" : "fail",
     summary: {

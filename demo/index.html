@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Run Agentic Security Lab cases in a local browser workbench." />
+    <meta name="color-scheme" content="dark" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'" />
+    <title>Agentic Security Lab Workbench</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="masthead">
+      <a class="wordmark" href="../README.md" aria-label="Agentic Security Lab documentation">
+        <span>ASL</span>
+        <strong>Action control workbench</strong>
+      </a>
+      <div class="privacy"><span aria-hidden="true"></span> Local session. No network calls.</div>
+    </header>
+
+    <main>
+      <aside class="case-rail" aria-labelledby="case-heading">
+        <div class="rail-heading">
+          <p class="eyebrow">Scenario corpus</p>
+          <h1 id="case-heading">Choose a control case</h1>
+        </div>
+        <nav id="case-list" aria-label="Available security scenarios"></nav>
+      </aside>
+
+      <section class="workspace" aria-labelledby="scenario-title">
+        <div class="case-header">
+          <div>
+            <p id="case-file" class="eyebrow"></p>
+            <h2 id="scenario-title"></h2>
+            <p id="scenario-purpose" class="purpose"></p>
+          </div>
+          <div class="case-controls">
+            <button id="reset-case" class="quiet" type="button">Reset case</button>
+            <button id="run-case" class="run" type="button">Evaluate action</button>
+          </div>
+        </div>
+
+        <div class="summary" aria-live="polite">
+          <div><span>Result</span><strong id="result-state">Not run</strong></div>
+          <div><span>Actions</span><strong id="action-count">0</strong></div>
+          <div><span>Allowed</span><strong id="allowed-count">0</strong></div>
+          <div><span>Findings</span><strong id="finding-count">0</strong></div>
+        </div>
+
+        <div class="work-grid">
+          <section class="editor-panel" aria-labelledby="input-heading">
+            <div class="panel-heading">
+              <div><p class="eyebrow">Input</p><h3 id="input-heading">Scenario JSON</h3></div>
+              <span id="input-status">Curated fixture</span>
+            </div>
+            <textarea id="scenario-editor" spellcheck="false" aria-label="Editable scenario JSON"></textarea>
+            <p class="hint">Edit capability, resource, approval, provenance, or the expected decision. Evaluation runs entirely in this tab.</p>
+          </section>
+
+          <section class="decision-panel" aria-labelledby="decision-heading">
+            <div class="panel-heading">
+              <div><p class="eyebrow">Output</p><h3 id="decision-heading">Decision evidence</h3></div>
+              <span id="policy-id"></span>
+            </div>
+            <div id="error-box" class="error-box" hidden></div>
+            <div id="empty-state" class="empty-state">
+              <div class="boundary-mark" aria-hidden="true">?</div>
+              <p>Run the case to see where the proposed action meets the policy boundary.</p>
+            </div>
+            <div id="decision-output" hidden></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Deterministic evaluator. No tool execution.</span>
+      <a href="../docs/DECISION-MODEL.md">Read the decision model</a>
+    </footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
