@@ -1,54 +1,43 @@
 # Agentic Security Lab
 
 [![verify](https://github.com/glatinone/agentic-security-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/glatinone/agentic-security-lab/actions/workflows/ci.yml)
+[![node](https://img.shields.io/badge/node-20%2B-brightgreen)](https://nodejs.org)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)](package.json)
 
-**A deny-by-default policy boundary, enforced before an AI agent can call a tool.**
+**Your AI agent wants to call tools. This is the bouncer that says no.**
 
-**[Open the live workbench](https://glatinone.github.io/agentic-security-lab/)**
+A deny-by-default policy boundary for AI agent tool calls. Try the [live workbench](https://glatinone.github.io/agentic-security-lab/) in your browser, no install.
 
 ![The browser workbench denying a repository write influenced by untrusted content](assets/screenshots/policy-workbench-deny.png)
 
 *Real workbench output from scenario 03. The approved write scope exists, but untrusted repository text still cannot drive the mutation.*
 
-Agent evaluations often grade the final answer. This lab examines a different failure boundary: what an agent tries to do with tools. It checks proposed actions against declared capabilities, resource scope, tenant ownership, approval records, data provenance, and a deny-by-default policy.
+Built for anyone shipping AI agents, MCP servers, or tool-using copilots who worries about prompt injection at the tool layer.
 
-The result is decision evidence that can be read in a terminal, stored as JSON, or reviewed as a Markdown case file. A separate trace audit checks whether a tool completion violated that boundary. For live code, `enforceAndDispatch` puts the decision in front of the function call. A deny produces a receipt and zero tool invocations.
+## Try it in 60 seconds
 
-```text
-proposed action
-    │
-    ├── declared capability?
-    ├── resource and tenant in scope?
-    ├── resource canonical and traversal-free?
-    ├── matching allow or deny rule?
-    ├── approval valid for this exact action?
-    ├── influenced by untrusted content?
-    └── secret-like material in arguments?
-         │
-         └── allow or deny, rule IDs, evidence
-```
+Requirements: Node.js 20 or newer. No runtime dependencies, no network calls.
 
-## Run it
-
-Requirements: Node.js 20 or newer. There are no runtime dependencies and no network calls.
+**1. Prove the engine works:**
 
 ```bash
 git clone https://github.com/glatinone/agentic-security-lab.git
 cd agentic-security-lab
-npm ci
-npm run suite
+npm ci && npm run suite
 ```
 
-Open the local action-control workbench:
+**2. Open the local workbench:**
 
 ```bash
-npm run demo:data
-npm run demo:web
+npm run demo:data && npm run demo:web
 ```
 
-Then visit `http://127.0.0.1:4173/demo/`. Choose a curated case, edit its policy inputs, and evaluate it with the same engine used by the CLI and tests. The workbench stores nothing and makes no network calls.
+Then visit `http://127.0.0.1:4173/demo/`. The workbench stores nothing and makes no network calls.
 
-Evaluate one case:
+**3. Run scenario 03 (prompt injection), watch it DENY, and read the receipt.**
+
+Prefer the terminal? Same engine, one command:
 
 ```bash
 node src/cli.js evaluate scenarios/03-prompt-injection.json
@@ -67,6 +56,56 @@ Actions: 1 | allowed 0 | denied 1 | findings 1
   ASL-109 high: Sensitive action was influenced by untrusted evidence: readme-instruction.
 ```
 
+## Why this exists
+
+Agent evaluations usually grade the final answer. The attacks that actually hurt happen one layer down, at the tool call: prompt injection that turns a review into a repo write, secret material forwarded to a third party, a read that quietly walks across a tenant boundary.
+
+This lab checks **what the agent tries to do**, not what it says. Every proposed action is checked against declared capabilities, resource scope, tenant ownership, approval records, data provenance, and a deny-by-default policy before any tool runs. The result is decision evidence you can read in a terminal, store as JSON, or review as a Markdown case file. A deny produces a receipt and zero tool invocations.
+
+```text
+proposed action
+    │
+    ├── declared capability?
+    ├── resource and tenant in scope?
+    ├── resource canonical and traversal-free?
+    ├── matching allow or deny rule?
+    ├── approval valid for this exact action?
+    ├── influenced by untrusted content?
+    └── secret-like material in arguments?
+         │
+         └── allow or deny, rule IDs, evidence
+```
+
+## What it does
+
+- Deny-by-default policy evaluation with explicit deny precedence
+- Capability, operation, and resource matching with `*` and `**` patterns
+- Resource canonicalization with plain, encoded, and double-encoded traversal rejection
+- Approval status, expiry, and exact scope checks, plus tenant-boundary enforcement for `tenant:<id>/...` resources
+- Provenance checks that stop untrusted evidence from driving sensitive actions
+- Secret-shape detection that reports categories without copying values into reports
+- Deterministic output and stable evaluation time for reproducible cases
+- Strict input validation, a 1 MiB input limit, and distinct CLI exit codes
+- Terminal, JSON, and Markdown reports
+- Trace-order auditing for completion after deny and completion without a prior decision
+- An enforcement dispatcher (`enforceAndDispatch`) that never calls a registered tool after a deny, with redacted receipts for blocked, completed, missing-adapter, and tool-error outcomes
+- 18 executable policy cases and 57 tests covering allow paths, denial paths, dispatch counts, redacted receipts, traversal, trace order, malformed input, CLI exit codes, matching, reporting, and expectation failure
+- A browser workbench that imports the production evaluator instead of reimplementing decisions
+
+The scenario evaluator never executes a proposed action. Runtime integrations use `enforceAndDispatch`, which invokes only an explicitly registered capability after an allow decision.
+
+## Integrate it
+
+For live code, `enforceAndDispatch` puts the decision in front of the function call. See the [integration contract](docs/INTEGRATION.md).
+
+A small support-agent example proves the boundary end to end:
+
+```bash
+npm run example:support
+```
+
+It reads a customer ticket, then handles a hostile instruction asking it to send a debug token. The read runs. The send does not. Final output: `{"outboundMessages":0}`.
+
 Generate machine-readable or review-ready output:
 
 ```bash
@@ -76,37 +115,6 @@ node src/cli.js audit traces/02-completion-after-deny.json
 node src/cli.js audit-suite traces
 node src/cli.js rules
 ```
-
-Prove the execution boundary with a small support-agent adapter:
-
-```bash
-npm run example:support
-```
-
-The example reads a customer ticket, then handles a hostile instruction asking it to send a debug token. The read runs. The send does not. Its final output is `{"outboundMessages":0}`. See [the integration contract](docs/INTEGRATION.md).
-
-## What is implemented
-
-- Deny-by-default policy evaluation with explicit deny precedence
-- Capability, operation, and resource matching with `*` and `**` patterns
-- Resource canonicalization with plain, encoded, and double-encoded traversal rejection
-- Approval status, expiry, and exact scope checks
-- Tenant-boundary enforcement for `tenant:<id>/...` resources
-- Provenance checks that stop untrusted evidence from driving sensitive actions
-- Secret-shape detection that reports categories without copying values into reports
-- Stable evaluation time and deterministic output for reproducible cases
-- Strict input validation, a 1 MiB input limit, and distinct CLI exit codes
-- Terminal, JSON, and Markdown reports
-- Trace-order auditing for completion after deny and completion without a prior decision
-- A production request contract with no scenario-only `expectedDecision` field
-- An enforcement dispatcher that never calls a registered tool after deny
-- Redacted receipts for blocked, completed, missing-adapter, and tool-error outcomes
-- 18 executable policy cases, including positive controls and multi-action plans
-- 57 tests covering allow paths, denial paths, dispatch count, redacted receipts, traversal, trace order, malformed input, CLI exit codes, matching, reporting, and expectation failure
-- A browser workbench that imports the production evaluator instead of reimplementing decisions
-- Architecture, decision semantics, ADRs, and an artifact provenance catalog
-
-The scenario evaluator never executes a proposed action. Runtime integrations use `enforceAndDispatch`, which invokes only an explicitly registered capability after an allow decision.
 
 ## Scenario suite
 
@@ -200,6 +208,10 @@ A passing scenario means the engine behaved as the case expected. It is not a se
 
 See [`THREAT-MODEL.md`](THREAT-MODEL.md) for the boundary in detail.
 
+## Contributing
+
+Issues labeled `good-first-issue` are the best place to start. Pull requests that include a scenario fixture (a new `.json` case under `scenarios/` plus its expected result) get reviewed first, because executable cases are the language of this repo. Keep changes small, keep the receipts redacted, and the suite green (`npm run suite`).
+
 ## Related work
 
 This project tests the control loop around tool use. Kiell's other projects cover adjacent layers:
@@ -213,3 +225,7 @@ These links describe related public work. Agentic Security Lab does not claim ru
 ## License
 
 [MIT](LICENSE)
+
+---
+
+*If this saved you from a scary tool call, a star keeps the lab alive.*
